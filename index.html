@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sistem Perpustakaan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--bg:#eef1f6;--card:#fff;--tx:#16203a;--mut:#5b6580;--pri:#1d2b4f;--pri-tx:#fff;--pri2:#e3e9f6;--acc:#f2b134;--hd:#1d2b4f;--bd:#dbe1ee;--bad:#b42318;--serif:'Fraunces',Georgia,'Times New Roman',serif;--sans:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;box-sizing:border-box;padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0e1424;--card:#172038;--tx:#e8ecf7;--mut:#9aa6c4;--pri:#a9c0ff;--pri-tx:#0e1424;--pri2:#212c4b;--hd:#0a0f1e;--bd:#28345a;--bad:#f97066}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0e1424;--card:#172038;--tx:#e8ecf7;--mut:#9aa6c4;--pri:#a9c0ff;--pri-tx:#0e1424;--pri2:#212c4b;--hd:#0a0f1e;--bd:#28345a;--bad:#f97066}
+*{box-sizing:border-box}
+html{scroll-padding-top:calc(var(--hh,64px) + 10px)}
+body{margin:0;padding-top:var(--hh,64px);background:var(--bg);color:var(--tx);font:15px/1.55 var(--sans)}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+header{background:var(--hd);position:fixed;top:0;left:0;right:0;z-index:15;padding-top:env(safe-area-inset-top,0px);box-shadow:0 2px 12px rgba(0,0,0,.22)}
+.bar{max-width:1040px;margin:auto;padding:8px 16px;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+.brand{order:1}
+.navw{order:2;margin-left:auto}
+.who{order:3;display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.82);font-size:13px;white-space:nowrap}
+.who span{max-width:150px;overflow:hidden;text-overflow:ellipsis}
+.who .out{background:rgba(255,255,255,.14);color:#fff;border:0;border-radius:99px;padding:6px 13px;font:600 13px var(--sans);cursor:pointer}
+.who .out:hover{background:rgba(255,255,255,.26)}
+header.two .brand{flex:1}
+header.two .who{order:2}
+header.two .navw{order:3;flex:1 1 100%;margin-left:0}
+.brand{font:700 18px var(--serif);color:#fff;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.brand img{height:32px;width:auto;border-radius:6px}
+.mark{display:inline-block;width:20px;height:26px;border-radius:3px 5px 5px 3px;background:linear-gradient(90deg,var(--acc) 0 6px,#fff 6px)}
+nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;min-width:0;max-width:100%}
+nav::-webkit-scrollbar{display:none}
+.navw{display:flex;align-items:center;gap:6px;min-width:0;max-width:100%}
+.navw nav{position:relative}
+.nb{display:none;flex:none;width:32px;height:32px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font:700 20px/1 var(--sans);cursor:pointer;padding:0;align-items:center;justify-content:center}
+.navw.hasov .nb{display:flex}
+.nb:hover{background:rgba(255,255,255,.26)}
+.nb:disabled{opacity:.3;cursor:default}
+@media (max-width:860px){.brand{flex:1}.who{order:2}.navw{order:3;flex:1 1 100%;margin-left:0}}
+nav a{padding:7px 10px;border-radius:99px;color:rgba(255,255,255,.78);text-decoration:none;font-size:14px;font-weight:500;white-space:nowrap}
+nav a:hover{color:#fff;background:rgba(255,255,255,.1)}
+nav a.on{background:var(--acc);color:#1d2b4f;font-weight:700}
+main{max-width:1040px;margin:auto;padding:22px 16px 56px}
+h1{font:700 30px/1.15 var(--serif);margin:0 0 6px;letter-spacing:-.01em}
+h2{font:600 19px/1.25 var(--serif);margin:0 0 12px}
+.sub{color:var(--mut);margin:0 0 18px;max-width:62ch}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px;margin-bottom:14px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:16px}
+.stats .card{margin:0}
+.stat{border-left:4px solid var(--acc)}
+.stat b{display:block;font:700 30px/1.1 var(--serif);color:var(--pri)}
+.stat span{color:var(--mut);font-size:13px}
+input,select,textarea,button{font:inherit}
+input,select{width:100%;padding:10px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx)}
+input:focus,select:focus,textarea:focus{border-color:var(--pri)}
+textarea{width:100%;padding:10px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:13px/1.4 ui-monospace,monospace}
+label{display:block;font-size:13px;font-weight:500;color:var(--mut);margin-bottom:5px}
+.row{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-bottom:12px}
+.btn{background:var(--pri);color:var(--pri-tx);border:0;padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px}
+.btn:hover{filter:brightness(1.12)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.s{background:var(--pri2);color:var(--pri)}
+.btn.d{background:transparent;color:var(--bad);border:1px solid var(--bd)}
+.btn.m{padding:6px 11px;font-size:13px}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--pri2);color:var(--pri)}
+.tag.no{background:transparent;border:1px solid var(--bad);color:var(--bad)}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:var(--mut) transparent;background-color:var(--card);background-image:linear-gradient(to right,var(--card) 30%,transparent),linear-gradient(to left,var(--card) 30%,transparent),radial-gradient(farthest-side at 0 50%,rgba(0,0,0,.22),transparent),radial-gradient(farthest-side at 100% 50%,rgba(0,0,0,.22),transparent);background-repeat:no-repeat;background-size:40px 100%,40px 100%,14px 100%,14px 100%;background-position:0 0,100% 0,0 0,100% 0;background-attachment:local,local,scroll,scroll}
+.tw::-webkit-scrollbar{height:8px}
+.tw::-webkit-scrollbar-thumb{background:var(--mut);border-radius:8px}
+.swipe{margin:0 0 6px;font-size:12px;color:var(--mut);text-align:right}
+.pager{position:sticky;left:0;max-width:calc(100vw - 72px);margin-top:12px}
+.pg{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;font-size:13px;color:var(--mut)}
+.pgc{display:flex;align-items:center;gap:8px}
+.pgn{font-weight:600;color:var(--tx);white-space:nowrap}
+.pgh{display:none;width:100%;margin:0;font-size:12px}
+@media (hover:none){.pgh{display:block}}
+input[type=checkbox]{width:18px;height:18px;padding:0;margin:0;accent-color:var(--pri);vertical-align:middle;cursor:pointer}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;padding:10px 12px;background:var(--pri2);color:var(--pri);font-weight:600;font-size:13px;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--bd);white-space:nowrap}
+tr:hover td{background:var(--bg)}
+.late{color:var(--bad);font-weight:600}
+.err{color:var(--bad);margin:10px 0 0;font-size:14px}
+.note{font-size:13px;color:var(--mut);margin-top:12px}
+.bar2{height:8px;background:var(--acc);border-radius:4px}
+.flex{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.login{max-width:410px;margin:28px auto;border-top:5px solid var(--acc)}
+.ov{position:fixed;inset:0;background:rgba(10,15,30,.55);display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}
+.dlg{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:14px;padding:20px;max-width:380px;width:100%}
+.hero{background:var(--hd);color:#fff;border-radius:18px;overflow:hidden;margin-bottom:22px}
+.hero-in{padding:30px 26px 22px}
+.hero-logo{height:56px;width:auto;border-radius:8px;margin-bottom:14px;background:#fff;padding:4px}
+.hero h1{font-size:clamp(26px,5vw,40px);max-width:18ch;margin-bottom:10px;color:#fff}
+.hero p{margin:0 0 18px;color:rgba(255,255,255,.78);max-width:52ch}
+.hero-search{display:flex;gap:8px;flex-wrap:wrap}
+.hero-search input,.hero-search select{background:#fff;color:#16203a;border:0;border-radius:10px;padding:14px 15px;font-size:16px}
+.hero-search input{flex:2 1 240px;width:auto}
+.hero-search select{flex:1 1 170px;width:auto}
+.hero p.hero-meta{margin:14px 0 0;font-size:14px}
+.hero-meta b{color:var(--acc)}
+.spines{display:flex;align-items:flex-end;gap:4px;height:78px;padding:0 26px}
+.spines i{flex:1;max-width:44px;border-radius:3px 3px 0 0;background:hsl(var(--h) 42% 46%);border-top:4px solid hsl(var(--h) 50% 62%)}
+.shelf{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.book{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--bd);border-radius:10px;overflow:hidden}
+.cover{position:relative;min-height:180px;padding:44px 16px 16px 26px;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;background:linear-gradient(90deg,hsl(var(--h) 40% 17%) 0 11px,hsl(var(--h) 38% 30%) 11px)}
+.cover h3{font:600 19px/1.2 var(--serif);margin:0 0 6px;color:#fff}
+.cover p{margin:0;font-size:13px;opacity:.85}
+.ct{position:absolute;top:12px;left:26px;font-size:12px;background:rgba(255,255,255,.16);padding:2px 9px;border-radius:99px}
+.bmeta{padding:12px 14px 14px;display:grid;gap:5px;justify-items:start}
+.bmeta p{margin:0;font-size:13px;color:var(--mut)}
+.empty{grid-column:1/-1;text-align:center;padding:44px 16px;color:var(--mut)}
+.empty b{display:block;font:600 18px var(--serif);color:var(--tx);margin-bottom:4px}
+.kl{max-height:260px;overflow:auto;display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.kit{display:flex;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;cursor:pointer;margin:0;color:var(--tx);font-size:14px}
+.kit input{flex:none}
+.kit span{display:grid}.kit small{color:var(--mut);font-size:12px}
+.pr{overflow-x:auto}
+.kgrid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,85.6mm)}
+.kc{width:85.6mm;height:54mm;border-radius:3mm;overflow:hidden;background:#fff;color:#16203a;border:1px solid #cfd6e6;display:flex;flex-direction:column;font-family:var(--sans);break-inside:avoid}
+.kh{background:#1d2b4f;color:#fff;padding:3mm 4mm;border-bottom:1.2mm solid #f2b134}
+.kb{display:flex;align-items:center;gap:2.5mm}
+.kb img{height:8mm;width:auto;border-radius:1mm;background:#fff;padding:.5mm}
+.kb b{display:block;font:700 4.2mm/1.1 var(--serif)}
+.kb small{font-size:2.6mm;opacity:.8}
+.kb .mark{width:5mm;height:7mm}
+.kbd{flex:1;padding:2mm 4mm 0;display:flex;align-items:center;justify-content:space-between;gap:3mm}
+.ktx{min-width:0}
+.kq{flex:none;width:24mm;height:24mm}
+.kq svg{display:block;width:100%;height:100%}
+.kn{font:700 5mm/1.15 var(--serif);overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.kn.s{font-size:3.8mm}
+.kno{font:700 4mm/1.2 ui-monospace,monospace;color:#1d2b4f;margin-top:1.5mm;letter-spacing:.3mm}
+.km{font-size:3.2mm;color:#5b6580;margin-top:1mm}
+.kf{display:flex;justify-content:space-between;padding:1.5mm 4mm 2.5mm;font-size:2.4mm;color:#5b6580}
+.rptp{display:none}
+.rt{width:100%;border-collapse:collapse;font-size:9pt;margin:2mm 0 4mm}
+.rt th,.rt td{border:1px solid #bbc3d6;padding:1.2mm 2mm;text-align:left;white-space:normal}
+.rt th{background:#e3e9f6;color:#16203a}
+#bkp .rt td:nth-child(2),#bkp .rt td:nth-child(n+4){white-space:nowrap}
+@media print{
+  @page{size:A4;margin:12mm}
+  @page kartu{size:A4;margin:7mm}
+  @page buku{size:A4 landscape;margin:10mm}
+  html,body{background:#fff!important;padding:0!important;color:#16203a}
+  header,.swipe,.pager,.ov{display:none!important}
+  body[data-pg=kartu] #app>*{display:none!important}
+  body[data-pg=kartu] #app>.pr{display:block!important;border:0!important;padding:0!important;overflow:visible!important;background:#fff!important;page:kartu}
+  body[data-pg=kartu] .pr>:not(.kgrid){display:none!important}
+  body[data-pg=kartu] .kgrid{grid-template-columns:repeat(2,85.6mm)!important;gap:3mm 6mm!important;justify-content:center}
+  body[data-pg=laporan] #app>*{display:none!important}
+  body[data-pg=buku] #app>*,body[data-pg=kunjungan] #app>*{display:none!important}
+  body[data-pg=laporan] #app>.rptp,body[data-pg=buku] #app>.rptp,body[data-pg=kunjungan] #app>.rptp{display:block!important}
+  body[data-pg=buku] #app>.rptp{page:buku}
+  .rptp h1{font:700 18pt var(--serif);margin:0 0 1mm;color:#16203a}
+  .rptp h2{font:600 11.5pt var(--serif);margin:5mm 0 1mm;break-after:avoid;color:#1d2b4f}
+  .rptp p{margin:0 0 3mm;color:#5b6580}
+  .rptp ol{margin:1mm 0 0;padding-left:5mm}
+  .rh{border-bottom:2mm solid #f2b134;margin-bottom:3mm}
+  .rt tr{break-inside:avoid}
+  .kh,.kb .mark,.rt th,.rh{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+.syncst{font-size:12px;opacity:.8}
+.syncst.bad{color:#ffb4ab;opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header><div class="bar"><div class="brand" id="brand"></div><div class="navw"><button class="nb" id="nl" aria-label="Geser menu ke kiri">‹</button><nav id="nav"></nav><button class="nb" id="nr" aria-label="Geser menu ke kanan">›</button></div><div class="who" id="who"></div></div></header>
+<main id="app"></main>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script>
+const LOCALK=['lib_pg'];
+const load=(k,d)=>{if(!LOCALK.includes(k))return d;try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
+const REMOTEK=['lib_name','lib_dash','lib_logo','lib_fine','lib_resdays'];
+const save=(k,v)=>{if(REMOTEK.includes(k)){setRemote(k,v);return}if(LOCALK.includes(k)){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const DAY=864e5,today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')},addDays=(d,n)=>new Date(new Date(d).getTime()+n*DAY).toISOString().slice(0,10);
+const seed=[];
+const defUsers={};
+let libName=load('lib_name','Perpustakaan'),dashName=load('lib_dash','Dashboard'),logo=load('lib_logo',''),visits=load('lib_visits',[]),books=load('lib_books',seed),loans=load('lib_loans',[]),members=load('lib_members',[]),users=load('lib_users',defUsers),me=null,q='',kat='',editId=null,editUser=null,editVisit=null,rMonth='',rAll=false,msg='';
+books.forEach(b=>{if(b.penerbit==null)b.penerbit='';if(b.kode==null)b.kode=b.rak||''});
+const U=()=>me&&users[me];
+const ROLE={admin:'Admin',kepala:'Kepala Perpustakaan',staf:'Staf Perpustakaan',duta:'Duta Perpustakaan'},NAMA={dashboard:'Dashboard',buku:'Kelola Buku',anggota:'Anggota',kartu:'Kartu Anggota',pinjam:'Peminjaman',reservasi:'Reservasi',kunjungan:'Kunjungan',denda:'Kelola Denda',laporan:'Laporan',pengurus:'Kelola Pengurus',pengaturan:'Pengaturan'},ACCESS={admin:['dashboard','buku','anggota','kartu','pinjam','reservasi','kunjungan','denda','laporan','pengurus','pengaturan'],kepala:['dashboard','buku','anggota','kartu','pinjam','reservasi','kunjungan','denda','laporan','pengaturan'],staf:['dashboard','buku','anggota','kartu','pinjam','reservasi','kunjungan','denda','pengaturan'],duta:['dashboard','pinjam','reservasi','kunjungan','pengaturan']};
+const avail=b=>isStaff()?(b.stok-loans.filter(l=>l.bookId===b.id&&!l.tglKembali).length-resv.filter(r=>r.bookId===b.id&&resLive(r)).length):(b.stok-(pubHeld[b.id]||0));
+const bk=id=>books.find(b=>b.id===id);
+const sv=()=>syncSoon();
+const $=s=>document.querySelector(s);
+
+function route(){
+  let h=(location.hash||'#katalog').slice(1);const u=U();
+  if(['dashboard','buku','anggota','kartu','pinjam','reservasi','kunjungan','denda','laporan','pengurus','pengaturan'].includes(h)&&!u)h='masuk';
+  if(u&&h!=='katalog'&&!(ACCESS[u.role]||[]).includes(h))h='dashboard';
+  if(h==='masuk'&&u)h='dashboard';
+  const items=[['katalog','Katalog']];
+  if(u){(ACCESS[u.role]||['dashboard']).forEach(k=>items.push([k,k==='dashboard'?esc(dashName||'Dashboard'):NAMA[k]]))}
+  else items.push(['masuk','Masuk Staf']);
+  $('#brand').innerHTML=(logo?`<img src="${logo}" alt="Logo">`:'<i class="mark"></i>')+'<span>'+esc(libName||'Perpustakaan')+'</span>';document.title=libName||'Perpustakaan';document.body.dataset.pg=h;$('#nav').innerHTML=items.map(i=>`<a href="#${i[0]}" class="${i[0]===h?'on':''}">${i[1]}</a>`).join('');$('#who').innerHTML=u?`<span id="syncst" class="syncst${syncBad?' bad':''}" title="${esc(syncText)}">${esc(syncText)}</span><span>${esc(u.nama)}</span><button type="button" class="out" onclick="logout()">Keluar</button>`:'';document.querySelector('header').classList.toggle('two',!!u);
+  $('#app').innerHTML=({katalog:vKatalog,masuk:vMasuk,dashboard:vDash,buku:vBuku,anggota:vAnggota,kartu:vKartu,pinjam:vPinjam,reservasi:vReservasi,kunjungan:vKunjungan,denda:vDenda,pengurus:vPengurus,laporan:vLaporan,pengaturan:vSet})[h]();
+  if(h==='katalog')list();if(h==='kartu')kList();if(h==='pinjam')initPinjam();if(h==='kunjungan')visList();qmap={};['bkT','anT','actT','hisT','dnT','kasT','rsT'].forEach(applyRows);hintSwipe();navActive();hdrH();
+}
+window.addEventListener('hashchange',()=>{pgmap={};route()});
+
+/* KATALOG (umum) */
+function vKatalog(){
+  const cats=[...new Set(books.map(b=>b.kategori))].sort();
+  const tot=books.reduce((a,b)=>a+Number(b.stok),0),ava=books.reduce((a,b)=>a+avail(b),0);
+  const spines=[62,88,48,96,70,56,84,44,92,66,52,78,90,60,74,50].map((h,i)=>`<i style="height:${h}%;--h:${(i*47+20)%360}"></i>`).join('');
+  return `<section class="hero"><div class="hero-in">${logo?`<img class="hero-logo" src="${logo}" alt="Logo perpustakaan">`:''}<h1>Cari buku yang ingin dibaca</h1><p>Katalog perpustakaan terbuka untuk umum. Cek dulu apakah bukunya tersedia sebelum datang.</p>
+  <div class="hero-search"><input id="q" value="${esc(q)}" oninput="q=this.value;list()" placeholder="Judul, penulis, ISBN, atau kode buku" aria-label="Cari buku"><select onchange="kat=this.value;list()" aria-label="Kategori"><option value="">Semua kategori</option>${cats.map(c=>`<option ${c===kat?'selected':''}>${esc(c)}</option>`).join('')}</select></div>
+  <p class="hero-meta"><b>${books.length}</b> judul, <b>${ava}</b> dari ${tot} eksemplar tersedia</p><button class="btn s m" style="margin-top:12px" onclick="resCek()">Cek atau batalkan reservasi saya</button></div><div class="spines" aria-hidden="true">${spines}</div></section><div id="list" class="shelf"></div>`;
+}
+function list(){
+  const s=q.toLowerCase(),r=books.filter(b=>(!kat||b.kategori===kat)&&(!s||[b.judul,b.penulis,b.isbn,b.kode].some(x=>String(x||'').toLowerCase().includes(s))));
+  const hue=k=>[...String(k)].reduce((a,c)=>a+c.charCodeAt(0),0)*37%360;
+  $('#list').innerHTML=r.length?r.map(b=>{const a=avail(b);return `<article class="book"><div class="cover" style="--h:${hue(b.kategori)}"><span class="ct">${esc(b.kategori)}</span><h3>${esc(b.judul)}</h3><p>${esc(b.penulis)}</p></div><div class="bmeta"><span class="tag ${a>0?'':'no'}">${a>0?'Tersedia '+a+' dari '+b.stok:'Sedang dipinjam semua'}</span><p>${esc(b.penerbit||'-')}</p><p>ISBN ${esc(b.isbn)}, kode ${esc(b.kode)}</p><button class="btn m" ${a>0?'':'disabled'} onclick="resDlg('${b.id}')">Reservasi</button></div></article>`}).join(''):'<div class="empty"><b>Buku tidak ditemukan</b>Coba kata kunci lain atau pilih kategori Semua.</div>';
+}
+
+/* LOGIN */
+/* ===== VERSI ONLINE (Supabase) ===== */
+const CFG=window.APP_CONFIG||{};
+const SB={url:String(CFG.SUPABASE_URL||'').replace(/\/+$/,''),key:CFG.SUPABASE_ANON_KEY||'',session:null};
+const COLN=['books','loans','members','visits','kas','resv'];
+var snap={books:{},loans:{},members:{},visits:{},kas:{},resv:{}},pubHeld={},dirty=false,pushing=false,rerun=false,pushTimer=null,syncText='',syncBad=false,pollOn=false;
+const colGet=n=>({books,loans,members,visits,kas:kasTx,resv})[n];
+const colSet=(n,v)=>{if(n==='books')books=v;else if(n==='loans')loans=v;else if(n==='members')members=v;else if(n==='visits')visits=v;else if(n==='kas')kasTx=v;else resv=v};
+const isStaff=()=>!!(SB.session&&me&&users[me]);
+const fixBooks=()=>books.forEach(b=>{if(b.penerbit==null)b.penerbit='';if(b.kode==null)b.kode=b.rak||''});
+const sessFrom=j=>({access_token:j.access_token,refresh_token:j.refresh_token,expires_at:j.expires_at||Math.floor(Date.now()/1000)+(j.expires_in||3600),uid:j.user&&j.user.id,email:j.user&&j.user.email});
+function setSess(s){SB.session=s;try{if(s)sessionStorage.setItem('lib_sess',JSON.stringify(s));else sessionStorage.removeItem('lib_sess')}catch(e){}}
+async function refreshSess(){
+  const s=SB.session;if(!s||!s.refresh_token)throw new Error('Sesi berakhir');
+  const r=await fetch(SB.url+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:SB.key,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:s.refresh_token})});
+  const j=await r.json();if(!r.ok)throw new Error(j.error_description||j.msg||'Sesi berakhir');
+  setSess(sessFrom(j));
+}
+async function token(){
+  const s=SB.session;if(!s)return SB.key;
+  if(s.expires_at&&s.expires_at*1000-Date.now()<60000){try{await refreshSess()}catch(e){}}
+  return SB.session?SB.session.access_token:SB.key;
+}
+async function api(method,path,opt){
+  opt=opt||{};const t=await token();
+  const h={apikey:SB.key,Authorization:'Bearer '+t,'Content-Type':'application/json'};if(opt.prefer)h.Prefer=opt.prefer;
+  const r=await fetch(SB.url+path,{method,headers:h,body:opt.body!==undefined?JSON.stringify(opt.body):undefined});
+  const tx=await r.text();let j=null;try{j=tx?JSON.parse(tx):null}catch(e){}
+  if(!r.ok){const er=new Error((j&&(j.message||j.error_description||j.msg||j.error))||('Kesalahan '+r.status));er.status=r.status;throw er}
+  return j;
+}
+const rpc=(fn,args)=>api('POST','/rest/v1/rpc/'+fn,{body:args});
+async function dbSelect(t){
+  const out=[];
+  for(let off=0;;off+=1000){
+    const rows=await api('GET','/rest/v1/'+t+'?select=id,data&order=id&limit=1000&offset='+off);
+    rows.forEach(r=>out.push(r.data));if(rows.length<1000)break;
+  }
+  return out;
+}
+async function dbUpsert(t,rows){for(let i=0;i<rows.length;i+=200)await api('POST','/rest/v1/'+t,{body:rows.slice(i,i+200),prefer:'resolution=merge-duplicates,return=minimal'})}
+async function dbDelete(t,ids){for(let i=0;i<ids.length;i+=40){const q=ids.slice(i,i+40).map(x=>'"'+String(x).replace(/"/g,'')+'"').join(',');await api('DELETE','/rest/v1/'+t+'?id=in.('+encodeURIComponent(q)+')',{prefer:'return=minimal'})}}
+const SETVAR={lib_name:v=>{libName=v},lib_dash:v=>{dashName=v},lib_logo:v=>{logo=v},lib_fine:v=>{fineRate=Number(v)},lib_resdays:v=>{resDays=Number(v)}};
+async function loadSettings(){const rows=await api('GET','/rest/v1/settings?select=key,value');(rows||[]).forEach(r=>{const f=SETVAR[r.key];if(f&&r.value!=null)f(r.value)})}
+async function loadProfiles(){const rows=await api('GET','/rest/v1/profiles?select=id,nama,role,email');users={};(rows||[]).forEach(r=>{users[r.id]=r})}
+async function loadPublic(){
+  const c=await api('POST','/rest/v1/rpc/public_catalog',{body:{}});
+  books=(c&&c.books)||[];pubHeld=(c&&c.held)||{};fixBooks();
+}
+async function loadAll(){
+  await loadSettings();
+  if(isStaff()){
+    const res=await Promise.all(COLN.map(dbSelect));
+    if(dirty||pushing)return;
+    COLN.forEach((n,i)=>{colSet(n,res[i]);snap[n]={};res[i].forEach(o=>{snap[n][o.id]=JSON.stringify(o)})});
+    fixBooks();await loadProfiles();
+  }else await loadPublic();
+}
+async function setRemote(k,v){
+  if(!isStaff())return;
+  try{await api('POST','/rest/v1/settings',{body:[{key:k,value:v}],prefer:'resolution=merge-duplicates,return=minimal'});setSyncChip('Tersimpan')}
+  catch(e){setSyncChip('Gagal menyimpan pengaturan: '+e.message,true)}
+}
+function setSyncChip(t,bad){syncText=t||'';syncBad=!!bad;const e=document.getElementById('syncst');if(e){e.textContent=syncText;e.title=syncText;e.className='syncst'+(syncBad?' bad':'')}}
+function syncSoon(){
+  if(!isStaff())return;
+  dirty=true;setSyncChip('Menyimpan…');clearTimeout(pushTimer);pushTimer=setTimeout(pushAll,400);
+}
+async function pushAll(){
+  if(!isStaff()){dirty=false;return}
+  if(pushing){rerun=true;return}
+  pushing=true;
+  try{
+    do{
+      rerun=false;
+      for(const n of COLN){
+        const cur=colGet(n)||[],seen={},up=[];
+        cur.forEach(o=>{if(!o||o.id==null)return;seen[o.id]=1;const js=JSON.stringify(o);if(snap[n][o.id]!==js)up.push({id:String(o.id),data:o,js})});
+        const del=Object.keys(snap[n]).filter(id=>!seen[id]);
+        if(up.length){await dbUpsert(n,up.map(r=>({id:r.id,data:r.data})));up.forEach(r=>{snap[n][r.id]=r.js})}
+        if(del.length){await dbDelete(n,del);del.forEach(id=>{delete snap[n][id]})}
+      }
+    }while(rerun);
+    dirty=false;setSyncChip('Tersimpan');
+  }catch(e){
+    setSyncChip('Gagal menyimpan: '+e.message,true);clearTimeout(pushTimer);pushTimer=setTimeout(pushAll,6000);
+  }finally{pushing=false}
+}
+window.addEventListener('beforeunload',e=>{if(dirty||pushing){e.preventDefault();e.returnValue=''}});
+const stateKey=()=>JSON.stringify([books,loans,members,visits,kasTx,resv,pubHeld,libName,dashName,logo,fineRate,resDays,users]);
+async function refresh(){
+  const before=stateKey();
+  try{await loadAll()}catch(e){return}
+  if(before!==stateKey())route();
+}
+function startPolling(){
+  if(pollOn)return;pollOn=true;
+  const busy=()=>{const a=document.activeElement;return document.hidden||pushing||dirty||document.querySelector('.ov')||(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))};
+  setInterval(()=>{if(!busy())refresh()},30000);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(()=>{if(!busy())refresh()},400)});
+}
+async function restoreSession(){
+  let s=null;try{s=JSON.parse(sessionStorage.getItem('lib_sess')||'null')}catch(e){}
+  if(!s||!s.refresh_token)return;
+  SB.session=s;
+  try{
+    if(s.expires_at*1000-Date.now()<60000)await refreshSess();
+    const rows=await api('GET','/rest/v1/profiles?id=eq.'+SB.session.uid+'&select=id,nama,role,email');
+    if(rows&&rows[0]){me=SB.session.uid;users={};users[me]=rows[0]}else setSess(null);
+  }catch(e){setSess(null)}
+}
+async function boot(){
+  if(!SB.url||/GANTI/.test(SB.url+SB.key)){$('#app').innerHTML='<div class="card"><h2>Aplikasi belum dikonfigurasi</h2><p class="sub" style="margin:0">Isi SUPABASE_URL dan SUPABASE_ANON_KEY di berkas config.js, lalu muat ulang halaman. Lihat PANDUAN.md.</p></div>';return}
+  $('#app').innerHTML='<div class="card"><p class="sub" style="margin:0">Memuat data…</p></div>';
+  await restoreSession();
+  try{await loadAll()}
+  catch(e){$('#app').innerHTML='<div class="card"><h2>Tidak dapat terhubung ke server</h2><p class="sub" style="margin:0 0 10px">'+esc(e.message)+'</p><button class="btn" onclick="location.reload()">Coba lagi</button></div>';return}
+  route();startPolling();
+}
+var lastEm='';
+function vMasuk(){
+  return `<div class="card login"><h2>Masuk Staf Perpustakaan</h2>
+  <form onsubmit="login(event)"><div style="margin-bottom:10px"><label>Email</label><input name="em" type="email" value="${esc(lastEm)}" required autocomplete="username"></div>
+  <div style="margin-bottom:12px"><label>Kata sandi</label><input name="pw" type="password" required autocomplete="current-password"></div>
+  <button class="btn" style="width:100%">Masuk</button><p class="err">${esc(msg)}</p></form></div>`;
+}
+async function login(e){
+  e.preventDefault();const f=e.target,btn=f.querySelector('button');btn.disabled=true;msg='';lastEm=f.em.value.trim();
+  try{
+    const r=await fetch(SB.url+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:SB.key,'Content-Type':'application/json'},body:JSON.stringify({email:f.em.value.trim(),password:f.pw.value})});
+    const j=await r.json();
+    if(!r.ok)throw new Error(r.status===400?'Email atau kata sandi salah.':(j.error_description||j.msg||'Gagal masuk.'));
+    setSess(sessFrom(j));
+    const rows=await api('GET','/rest/v1/profiles?id=eq.'+SB.session.uid+'&select=id,nama,role,email');
+    if(!rows||!rows[0]){await doLogout();throw new Error('Akun ini belum terdaftar sebagai petugas perpustakaan.')}
+    me=SB.session.uid;users={};users[me]=rows[0];
+    await loadAll();location.hash='#dashboard';route();startPolling();
+  }catch(err){
+    setSess(null);me=null;users={};
+    try{await loadPublic()}catch(x){}
+    msg=err.message;route();msg='';
+  }
+}
+async function doLogout(){
+  try{if(SB.session)await api('POST','/auth/v1/logout',{body:{}})}catch(e){}
+  setSess(null);me=null;users={};loans=[];members=[];visits=[];kasTx=[];resv=[];dirty=false;
+  snap={books:{},loans:{},members:{},visits:{},kas:{},resv:{}};
+}
+function logout(){doLogout().then(async()=>{try{await loadPublic()}catch(e){}location.hash='#katalog';route()})}
+async function fnAdmin(body){return api('POST','/functions/v1/admin-users',{body})}
+function resetPw(id){
+  const u=users[id];
+  if(u&&u.role!=='admin'&&U().role==='admin')ask('Reset kata sandi akun '+u.nama+' ('+u.email+') menjadi 123456?',async()=>{
+    try{await fnAdmin({action:'update',id,password:'123456'});msg='Kata sandi '+u.nama+' direset ke 123456. Minta pengurus segera menggantinya di menu Pengaturan.'}
+    catch(e){msg='Gagal reset: '+e.message}
+    route();msg='';
+  },'Ya, reset');
+}
+function vPengurus(){
+  const c=r=>Object.values(users).filter(u=>u.role===r).length;
+  return `<h1>Kelola Pengurus</h1><p class="sub">Daftar dan pengelolaan akun Kepala Perpustakaan, Staf, dan Duta Perpustakaan. Akun masuk memakai email dan kata sandi.</p>
+  <div class="stats"><div class="card stat"><b>${c('kepala')}</b><span>Kepala Perpustakaan</span></div><div class="card stat"><b>${c('staf')}</b><span>Staf</span></div><div class="card stat"><b>${c('duta')}</b><span>Duta</span></div></div>
+  <p class="note" style="margin:0 0 10px">${esc(msg)}</p>${staffCard()}`;
+}
+function staffCard(){
+  const o=['kepala','staf','duta'],st=Object.values(users).filter(u=>u.role!=='admin').sort((a,b)=>o.indexOf(a.role)-o.indexOf(b.role)||String(a.nama).localeCompare(String(b.nama))),ed=editUser&&users[editUser]?users[editUser]:null;
+  return `<div class="card"><h2>Akun Kepala, Staf, dan Duta</h2><p class="sub" style="margin-bottom:10px">Admin adalah pengelola utama. Tambahkan dan ubah akun yang posisinya di bawah Admin: Kepala Perpustakaan (akses penuh termasuk Laporan), Staf (buku, anggota, dan peminjaman), dan Duta Perpustakaan (peminjaman).</p>
+  ${ed?`<p class="note" style="margin:0 0 8px">Mengubah akun: <b>${esc(ed.nama)}</b></p>`:''}<form onsubmit="addStaf(event)"><div class="row"><div><label>Jabatan</label><select name="role">${o.map(r=>`<option value="${r}" ${ed&&ed.role===r?'selected':''}>${ROLE[r]}</option>`).join('')}</select></div><div><label>Nama lengkap</label><input name="nama" value="${esc(ed?ed.nama:'')}" required></div><div><label>Email (untuk masuk)</label><input name="em" type="email" value="${esc(ed?ed.email:'')}" required autocomplete="off"></div><div><label>${ed?'Kata sandi baru (kosongkan jika tidak diubah)':'Kata sandi'}</label><input name="pw" type="password" ${ed?'':'required'} autocomplete="new-password"></div></div><div class="flex"><button class="btn">${ed?'Simpan perubahan':'Tambah akun'}</button>${ed?'<button type="button" class="btn s" onclick="editUser=null;route()">Batal</button>':''}</div></form>
+  <div class="tw" style="margin-top:12px"><table><tr><th>Nama</th><th>Jabatan</th><th>Email</th><th></th></tr>${st.map(u=>`<tr><td>${esc(u.nama)}</td><td>${esc(ROLE[u.role]||u.role)}</td><td><b>${esc(u.email)}</b></td><td><button class="btn s m" onclick="editUser='${esc(u.id)}';route();scrollTo(0,0)">Ubah</button> <button class="btn s m" onclick="resetPw('${esc(u.id)}')">Reset sandi</button> <button class="btn d m" onclick="delStaf('${esc(u.id)}')">Hapus</button></td></tr>`).join('')||'<tr><td colspan="4">Belum ada akun.</td></tr>'}</table></div></div>`;
+}
+async function addStaf(e){
+  e.preventDefault();const f=e.target,say=t=>{msg=t;route();msg=''};
+  if(!U()||U().role!=='admin')return;
+  const email=f.em.value.trim().toLowerCase(),pw=f.pw.value,nama=f.nama.value.trim(),role=f.role.value;
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){say('Format email tidak valid.');return}
+  if((!editUser||pw)&&pw.length<6){say('Kata sandi minimal 6 karakter.');return}
+  const btn=f.querySelector('button');btn.disabled=true;
+  try{
+    if(editUser){await fnAdmin({action:'update',id:editUser,nama,role,email,password:pw});editUser=null;await loadProfiles();say('Data '+nama+' diperbarui.')}
+    else{await fnAdmin({action:'create',email,password:pw,nama,role});await loadProfiles();say('Akun '+nama+' ditambahkan.')}
+  }catch(err){btn.disabled=false;say('Gagal: '+err.message)}
+}
+function delStaf(id){
+  const u=users[id];if(!u||u.role==='admin'||U().role!=='admin')return;
+  ask('Hapus akun '+u.nama+' ('+u.email+')? Akun ini tidak bisa masuk lagi setelah dihapus.',async()=>{
+    try{await fnAdmin({action:'delete',id});if(editUser===id)editUser=null;await loadProfiles();msg='Akun '+u.nama+' dihapus.'}
+    catch(e){msg='Gagal menghapus: '+e.message}
+    route();msg='';
+  });
+}
+async function setCred(e){
+  e.preventDefault();const pw=e.target.pw.value,say=t=>{msg=t;route();msg=''};
+  if(pw.length<6){say('Kata sandi minimal 6 karakter.');return}
+  try{await api('PUT','/auth/v1/user',{body:{password:pw}});say('Kata sandi diperbarui.')}
+  catch(err){say('Gagal: '+err.message)}
+}
+function resDlg(id){
+  const b=bk(id);if(!b)return;
+  const o=document.createElement('div');o.className='ov';
+  o.innerHTML=`<div class="dlg"><h2 style="margin:0 0 6px">Reservasi buku</h2><p style="margin:0 0 8px"><b>${esc(b.judul)}</b><br><span class="note" style="margin:0">${esc(b.penulis)}</span></p><p class="note" style="margin:0 0 10px">Hanya untuk anggota terdaftar. Buku ditahan ${resDays} hari untuk Anda ambil di perpustakaan.</p><label>Nomor anggota</label><input id="rn" placeholder="Contoh: AGT-001" autocomplete="off" style="margin-bottom:8px"><p id="rm" class="note" style="margin:0 0 10px;min-height:1.2em"></p><div class="flex" style="justify-content:flex-end"><button class="btn s" id="no">Batal</button><button class="btn" id="yes">Reservasi</button></div></div>`;
+  document.body.appendChild(o);
+  const inp=o.querySelector('#rn'),rm=o.querySelector('#rm'),yes=o.querySelector('#yes');let step=1;
+  inp.focus();o.querySelector('#no').onclick=()=>o.remove();
+  inp.oninput=()=>{step=1;yes.textContent='Reservasi';rm.className='note';rm.textContent=''};
+  yes.onclick=async()=>{
+    yes.disabled=true;rm.className='note';rm.textContent='Memeriksa…';
+    try{
+      if(step===1){
+        const c=await rpc('reserve_preview',{p_no:inp.value,p_book:id});
+        if(!c.ok){rm.className='err';rm.textContent=c.error}
+        else{step=2;rm.textContent='Reservasi atas nama '+c.nama_samar+'. Tekan Konfirmasi jika benar.';yes.textContent='Konfirmasi'}
+        yes.disabled=false;return;
+      }
+      const c=await rpc('reserve_book',{p_no:inp.value,p_book:id});
+      if(!c.ok){rm.className='err';rm.textContent=c.error;step=1;yes.textContent='Reservasi';yes.disabled=false;return}
+      o.querySelector('.dlg').innerHTML=`<h2 style="margin:0 0 8px">Reservasi berhasil</h2><p style="margin:0 0 6px">Kode reservasi: <b>${esc(c.kode)}</b></p><p style="margin:0 0 6px"><b>${esc(b.judul)}</b></p><p class="note" style="margin:0 0 12px">Atas nama ${esc(c.nama_samar)}. Ambil buku di perpustakaan paling lambat <b>${fmtD(c.batas)}</b> dan tunjukkan nomor anggota Anda. Setelah lewat tanggal itu, reservasi dibatalkan otomatis.</p><div class="flex" style="justify-content:flex-end"><button class="btn" id="no2">Tutup</button></div>`;
+      o.querySelector('#no2').onclick=()=>o.remove();
+      if(isStaff())refresh();else{try{await loadPublic();if($('#list'))list()}catch(e){}}
+    }catch(err){rm.className='err';rm.textContent='Gagal terhubung: '+err.message;yes.disabled=false}
+  };
+  inp.onkeydown=e=>{if(e.key==='Enter'&&!yes.disabled)yes.click()};
+}
+function resCek(){
+  const o=document.createElement('div');o.className='ov';
+  o.innerHTML=`<div class="dlg" style="max-width:440px"><h2 style="margin:0 0 8px">Reservasi saya</h2><label>Nomor anggota</label><div class="flex" style="margin-bottom:8px"><input id="rn" placeholder="Contoh: AGT-001" autocomplete="off" style="flex:1;width:auto"><button class="btn" id="go">Cek</button></div><div id="rl"></div><div class="flex" style="justify-content:flex-end;margin-top:12px"><button class="btn s" id="no">Tutup</button></div></div>`;
+  document.body.appendChild(o);
+  const inp=o.querySelector('#rn'),rl=o.querySelector('#rl'),go=o.querySelector('#go');inp.focus();
+  o.querySelector('#no').onclick=()=>o.remove();
+  const show=async()=>{
+    rl.innerHTML='<p class="note" style="margin:0">Memeriksa…</p>';
+    try{
+      const c=await rpc('my_reservations',{p_no:inp.value});
+      if(!c.ok){rl.innerHTML=`<p class="err" style="margin:0">${esc(c.error)}</p>`;return}
+      const L=c.items||[];
+      rl.innerHTML=`<p class="note" style="margin:0 0 8px">Atas nama ${esc(c.nama_samar)}</p>`+(L.length?L.map(r=>`<div class="flex" style="justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bd)"><span><b>${esc(r.kode)}</b> ${esc(r.judul)}<br><small class="note">Ambil sebelum ${fmtD(r.batas)}</small></span><button class="btn d m" data-id="${esc(r.id)}">Batalkan</button></div>`).join(''):'<p class="sub" style="margin:0">Tidak ada reservasi aktif.</p>');
+      rl.querySelectorAll('button[data-id]').forEach(bt=>{bt.onclick=async()=>{
+        bt.disabled=true;
+        try{const x=await rpc('cancel_reservation',{p_no:inp.value,p_id:bt.dataset.id});if(!x.ok){rl.innerHTML=`<p class="err" style="margin:0">${esc(x.error)}</p>`;return}
+          await show();if(isStaff())refresh();else{await loadPublic();if($('#list'))list()}}
+        catch(err){rl.innerHTML=`<p class="err" style="margin:0">Gagal: ${esc(err.message)}</p>`}
+      }});
+    }catch(err){rl.innerHTML=`<p class="err" style="margin:0">Gagal terhubung: ${esc(err.message)}</p>`}
+  };
+  go.onclick=show;inp.onkeydown=e=>{if(e.key==='Enter')show()};
+}
+
+/* DASHBOARD */
+function vDash(){
+  const act=loans.filter(l=>!l.tglKembali),late=act.filter(l=>l.jatuhTempo<today());
+  const cats={};books.forEach(b=>cats[b.kategori]=(cats[b.kategori]||0)+b.stok);const mx=Math.max(1,...Object.values(cats));
+  return `<h1>${esc(dashName||'Dashboard')}</h1><p class="sub">${esc(libName||'Perpustakaan')}. Selamat datang, ${esc(U().nama)}.</p>
+  <div class="stats"><div class="card stat"><b>${books.length}</b><span>Judul buku</span></div><div class="card stat"><b>${books.reduce((a,b)=>a+Number(b.stok),0)}</b><span>Total eksemplar</span></div><div class="card stat"><b>${members.length}</b><span>Anggota</span></div><div class="card stat"><b>${act.length}</b><span>Sedang dipinjam</span></div><div class="card stat"><b style="color:var(--bad)">${late.length}</b><span>Terlambat</span></div><div class="card stat"><b style="color:var(--bad)">${rp(act.reduce((a,l)=>a+fineOf(l),0))}</b><span>Denda berjalan</span></div><div class="card stat"><b style="color:var(--bad)">${rp(unpaidTotal())}</b><span>Denda belum dibayar</span></div><div class="card stat"><b>${resv.filter(resLive).length}</b><span>Reservasi menunggu</span></div></div>
+  <div class="card"><h2>Eksemplar per kategori</h2>${Object.entries(cats).map(([c,n])=>`<div style="margin-bottom:8px"><div class="flex" style="justify-content:space-between"><span>${esc(c)}</span><span>${n}</span></div><div class="bar2" style="width:${n/mx*100}%"></div></div>`).join('')}</div>`;
+}
+
+/* KELOLA BUKU */
+var bmsg='';
+function vBuku(){
+  const cur=editId&&bk(editId),ed=!!cur,e=cur||{judul:'',penulis:'',kategori:'',penerbit:'',isbn:'',stok:1,kode:''};
+  const f=(n,l,t)=>`<div><label>${l}</label><input name="${n}" type="${t||'text'}" value="${esc(e[n])}" ${n==='stok'?'min="1"':''} required></div>`;
+  return `<h1>Kelola Buku</h1><p class="sub">Tambah, ubah, atau hapus koleksi buku.</p>
+  <p class="note" style="margin:0 0 10px">${esc(bmsg)}</p>${seedNote()}
+  <div class="card"${ed?' style="border:2px solid var(--acc)"':''}><h2>${ed?'Ubah buku':'Tambah buku'}</h2>${ed?`<p class="note" style="margin:0 0 10px">Mengubah <b>${esc(e.judul)}</b>. Sedang dipinjam ${loans.filter(l=>l.bookId===e.id&&!l.tglKembali).length} eksemplar.</p>`:''}<form onsubmit="saveBook(event)"><div class="row">${f('judul','Judul Buku')}${f('penulis','Penulis')}${f('kategori','Kategori')}${f('penerbit','Penerbit')}${f('isbn','ISBN')}${f('stok','Stok','number')}${f('kode','Kode Buku')}</div>
+  <div class="flex"><button class="btn">${ed?'Simpan perubahan':'Tambah buku'}</button>${ed?'<button type="button" class="btn s" onclick="editId=null;route()">Batal</button>':''}</div></form></div>
+  <div class="card tw"><h2>Daftar buku (${books.length})</h2><div class="flex" style="margin-bottom:10px"><select style="width:auto" onchange="setBkKat(this.value)" aria-label="Kategori yang dicetak"><option value="">Semua kategori</option>${[...new Set(books.map(b=>b.kategori))].sort().map(c=>`<option ${c===bkKat?'selected':''}>${esc(c)}</option>`).join('')}</select><button class="btn" onclick="bukuPdf()">Unduh PDF</button><button class="btn s" onclick="bukuPrint()">Cetak daftar buku</button></div><div class="flex" style="margin-bottom:8px"><input placeholder="Cari judul, penulis, kategori, atau kode…" oninput="filterRows(this,'bkT')" style="flex:1 1 220px;width:auto">${pgSelect()}</div><div class="flex" style="margin-bottom:8px"><button class="btn d m" id="bkTDel" disabled onclick="delSel('bkT','buku')">Hapus terpilih (0)</button></div><table id="bkT"><tr><th><input type="checkbox" class="ckh" onchange="ckAll(this,'bkT')" aria-label="Pilih semua"></th><th></th><th>Kode</th><th>Judul</th><th>Penulis</th><th>Kategori</th><th>Penerbit</th><th>Tersedia / stok</th></tr>${books.map(b=>`<tr${b.id===editId?' style="background:var(--pri2)"':''}><td><input type="checkbox" class="ck" value="${b.id}" onchange="ckUpd('bkT')" aria-label="Pilih buku"></td><td><button class="btn s m" onclick="editId='${b.id}';route();scrollTo(0,0)">Ubah</button> <button class="btn d m" onclick="delBook('${b.id}')">Hapus</button></td><td>${esc(b.kode)}</td><td>${esc(b.judul)}</td><td>${esc(b.penulis)}</td><td>${esc(b.kategori)}</td><td>${esc(b.penerbit)}</td><td>${avail(b)} / ${b.stok}</td></tr>`).join('')||'<tr><td colspan="8">Belum ada buku.</td></tr>'}</table></div>
+  ${bulkCard('bb','bulkBooks','judul buku, penulis, kategori, penerbit, ISBN, stok, kode buku','Laskar Pelangi,Andrea Hirata,Novel,Bentang Pustaka,9789793062792,3,BK-001&#10;Bumi Manusia,Pramoedya Ananta Toer,Novel,Lentera Dipantara,9789799731234,2,BK-002')}
+  <div id="bkp" class="rptp">${bukuPrintHtml()}</div>`;
+}
+function saveBook(e){
+  e.preventDefault();const f=e.target,d={};
+  ['judul','penulis','kategori','penerbit','isbn','stok','kode'].forEach(k=>d[k]=f[k].value.trim());
+  d.stok=Math.max(1,parseInt(d.stok,10)||1);
+  const cur=editId&&bk(editId),out=cur?loans.filter(l=>l.bookId===cur.id&&!l.tglKembali).length+resv.filter(r=>r.bookId===cur.id&&resLive(r)).length:0;
+  if(d.stok<out){ask('Stok tidak boleh kurang dari jumlah yang sedang dipinjam atau direservasi ('+out+' eksemplar).');return}
+  if(d.isbn&&books.some(b=>b.id!==(cur&&cur.id)&&String(b.isbn)===d.isbn)){ask('ISBN '+d.isbn+' sudah dipakai buku lain. Jika ini eksemplar tambahan, tambahkan stok pada buku tersebut.');return}
+  if(cur){Object.assign(cur,d);bmsg='Perubahan pada “'+d.judul+'” tersimpan.'}
+  else{books.push({id:'b'+Date.now(),...d});bmsg='Buku “'+d.judul+'” ditambahkan.'}
+  editId=null;sv();route();bmsg='';
+}
+function delBook(id){
+  if(busyBooks().has(id)){ask('Buku masih dipinjam atau direservasi, tidak bisa dihapus.');return}
+  ask('Hapus buku ini dari katalog?',()=>{books=books.filter(b=>b.id!==id);sv();route()})
+}
+
+/* IMPOR MASSAL */
+function parseRows(t){
+  const lines=t.replace(/\r/g,'').split('\n').filter(l=>l.trim());
+  if(!lines.length)return[];
+  const h=lines[0],d=h.includes('\t')?'\t':(h.split(';').length>h.split(',').length?';':',');
+  return lines.map(l=>{const o=[];let c='',q=false;for(let i=0;i<l.length;i++){const ch=l[i];if(q){if(ch==='"'){if(l[i+1]==='"'){c+='"';i++}else q=false}else c+=ch}else if(ch==='"')q=true;else if(ch===d){o.push(c.trim());c=''}else c+=ch}o.push(c.trim());return o});
+}
+function readFile(inp,ta){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$(ta).value=r.result};r.readAsText(f)}
+function bulkCard(id,fn,cols,ex){
+  return `<div class="card"><h2>Tambah massal</h2><p class="sub" style="margin-bottom:8px">Tempel data dari Excel atau Google Sheets (satu baris satu data), atau unggah file .csv. Urutan kolom: <b>${cols}</b>.</p><div style="margin-bottom:8px"><input type="file" accept=".csv,.txt,.tsv" onchange="readFile(this,'#${id}')"></div><textarea id="${id}" rows="6" placeholder="${ex}"></textarea><div class="flex" style="margin-top:8px"><button class="btn" onclick="${fn}()">Impor</button></div><p class="note">${esc(msg)}</p></div>`;
+}
+function bulkDone(n,sk,what,why){msg=n+' '+what+' ditambahkan'+(sk?', '+sk+' dilewati ('+why+').':'.');sv();route();msg=''}
+function bulkBooks(){
+  const rows=parseRows($('#bb').value);if(rows.length&&/^judul/i.test(rows[0][0]))rows.shift();
+  let n=0,sk=0;
+  rows.forEach(r=>{
+    const isbn=r[4]||'';
+    if(!r[0]||(isbn&&books.some(b=>String(b.isbn)===isbn))){sk++;return}
+    books.push({id:'b'+Date.now()+Math.random().toString(36).slice(2,6),judul:r[0],penulis:r[1]||'-',kategori:r[2]||'Umum',penerbit:r[3]||'-',isbn,stok:Math.max(1,+r[5]||1),kode:r[6]||'-'});n++;
+  });
+  bulkDone(n,sk,'buku','judul kosong atau ISBN sudah ada');
+}
+function bulkMembers(){
+  const rows=parseRows($('#bm').value);if(rows.length&&/^nama/i.test(rows[0][0]))rows.shift();
+  const has=no=>members.some(m=>m.no.toLowerCase()===no.toLowerCase());
+  let n=0,sk=0;
+  rows.forEach(r=>{
+    let no=r[1]||'';
+    if(!r[0]||(no&&has(no))){sk++;return}
+    if(!no){let i=members.length+1;do{no='AGT-'+String(i++).padStart(3,'0')}while(has(no))}
+    members.push({id:'m'+Date.now()+Math.random().toString(36).slice(2,6),nama:r[0],no,kelas:r[2]||'',tgl:today()});n++;
+  });
+  bulkDone(n,sk,'anggota','nama kosong atau nomor anggota sudah ada');
+}
+
+/* ANGGOTA */
+function vAnggota(){
+  const nx='AGT-'+String(members.length+1).padStart(3,'0');
+  const act=l=>loans.filter(x=>!x.tglKembali&&x.peminjam===l).length;
+  return `<h1>Anggota</h1><p class="sub">Daftar anggota perpustakaan.</p>
+  <div class="card"><h2>Tambah anggota</h2><form onsubmit="addMember(event)"><div class="row"><div><label>Nama lengkap</label><input name="nama" required></div><div><label>Nomor anggota</label><input name="no" value="${nx}" required></div><div><label>Kelas / instansi</label><input name="kelas"></div></div><button class="btn">Tambah anggota</button><p class="err">${esc(msg)}</p></form></div>
+  ${bulkCard('bm','bulkMembers','nama, nomor anggota (boleh dikosongkan, otomatis), kelas / instansi','Budi Santoso,,X IPA 1&#10;Siti Aminah,AGT-050,XI IPS 2')}<div class="card tw"><h2>Daftar anggota (${members.length})</h2><div class="flex" style="margin-bottom:8px"><input placeholder="Cari nama, nomor, atau kelas…" oninput="filterRows(this,'anT')" style="flex:1 1 220px;width:auto">${pgSelect()}</div><div class="flex" style="margin-bottom:8px"><button class="btn d m" id="anTDel" disabled onclick="delSel('anT','anggota')">Hapus terpilih (0)</button></div><table id="anT"><tr><th><input type="checkbox" class="ckh" onchange="ckAll(this,'anT')" aria-label="Pilih semua"></th><th>No.</th><th>Nama</th><th>Kelas / instansi</th><th>Dipinjam</th><th>Bergabung</th><th></th></tr>${members.map(m=>`<tr><td><input type="checkbox" class="ck" value="${m.id}" onchange="ckUpd('anT')" aria-label="Pilih anggota"></td><td>${esc(m.no)}</td><td>${esc(m.nama)}</td><td>${esc(m.kelas)}</td><td>${act(m.nama+' ('+m.no+')')}</td><td>${m.tgl}</td><td><button class="btn d m" onclick="delMember('${m.id}')">Hapus</button></td></tr>`).join('')||'<tr><td colspan="7">Belum ada anggota.</td></tr>'}</table></div>`;
+}
+function addMember(e){
+  e.preventDefault();const f=e.target,no=f.no.value.trim();
+  if(members.some(m=>m.no.toLowerCase()===no.toLowerCase())){msg='Nomor anggota sudah dipakai.';route();msg='';return}
+  members.push({id:'m'+Date.now(),nama:f.nama.value.trim(),no,kelas:f.kelas.value.trim(),tgl:today()});sv();route();
+}
+function delMember(id){
+  const m=members.find(x=>x.id===id),l=m.nama+' ('+m.no+')';
+  if(loans.some(x=>!x.tglKembali&&x.peminjam===l)||resv.some(r=>resLive(r)&&r.no===m.no)){ask('Anggota masih memiliki pinjaman atau reservasi aktif.');return}
+  ask('Hapus anggota ini?',()=>{members=members.filter(x=>x.id!==id);sv();route()})
+}
+
+/* MENU NAVIGASI KIRI-KANAN */
+function navArrows(){
+  const n=$('#nav');if(!n)return;const w=n.parentNode;
+  w.classList.remove('hasov');
+  if(n.scrollWidth>n.clientWidth+2)w.classList.add('hasov');
+  $('#nl').disabled=n.scrollLeft<=2;
+  $('#nr').disabled=n.scrollLeft+n.clientWidth>=n.scrollWidth-2;
+}
+function navActive(){
+  const n=$('#nav'),a=n.querySelector('a.on');
+  navArrows();
+  if(a&&n.parentNode.classList.contains('hasov'))n.scrollLeft=a.offsetLeft-(n.clientWidth-a.offsetWidth)/2;
+  navArrows();
+}
+$('#nl').onclick=()=>$('#nav').scrollBy({left:-200,behavior:'smooth'});
+$('#nr').onclick=()=>$('#nav').scrollBy({left:200,behavior:'smooth'});
+$('#nav').addEventListener('scroll',navArrows);
+window.addEventListener('resize',navArrows);
+
+/* SINKRONISASI ANTAR TAB */
+
+/* TINGGI BILAH ATAS */
+function hdrH(){document.documentElement.style.setProperty('--hh',document.querySelector('header').offsetHeight+'px')}
+if(window.ResizeObserver)new ResizeObserver(hdrH).observe(document.querySelector('header'));
+window.addEventListener('resize',hdrH);hdrH();
+
+/* GESER KIRI-KANAN */
+function hintSwipe(){
+  document.querySelectorAll('.tw').forEach(t=>{
+    const pv=t.previousElementSibling,has=pv&&pv.classList.contains('swipe');
+    if(t.scrollWidth>t.clientWidth+4){if(!has){const p=document.createElement('p');p.className='swipe';p.textContent='Geser ke kiri atau kanan untuk melihat kolom lainnya';t.before(p)}}
+    else if(has)pv.remove();
+  });
+}
+window.addEventListener('resize',hintSwipe);
+(function(){
+  let el=null,x=0,sl=0,moved=false;
+  document.addEventListener('pointerdown',e=>{
+    if(e.pointerType!=='mouse'||e.button!==0)return;
+    const t=e.target.closest('.tw,nav');
+    if(!t||e.target.closest('input,select,button,a,textarea,label'))return;
+    el=t;x=e.clientX;sl=t.scrollLeft;moved=false;
+  });
+  document.addEventListener('pointermove',e=>{
+    if(!el)return;const dx=e.clientX-x;
+    if(Math.abs(dx)>4){moved=true;el.style.cursor='grabbing';el.style.userSelect='none'}
+    if(moved){el.scrollLeft=sl-dx;e.preventDefault()}
+  });
+  const end=()=>{if(el){el.style.cursor='';el.style.userSelect=''}el=null};
+  document.addEventListener('pointerup',end);document.addEventListener('pointercancel',end);
+})();
+
+/* FILTER JUMLAH TAMPILAN */
+var pgSize=+load('lib_pg',10)||10,qmap={},pgmap={};
+const pgSelect=()=>`<label style="display:inline-flex;align-items:center;gap:6px;margin:0;white-space:nowrap">Tampilkan<select style="width:auto" onchange="setPg(this.value)">${[10,25,50,100].map(n=>`<option ${n===pgSize?'selected':''}>${n}</option>`).join('')}</select>baris</label>`;
+function setPg(v){pgSize=[10,25,50,100].includes(+v)?+v:10;save('lib_pg',pgSize);pgmap={};route()}
+const pagerHtml=(id,pg,pages,total,a,b)=>`<div class="pg"><span>Menampilkan ${a}–${b} dari ${total} data</span>${pages>1?`<div class="pgc"><button type="button" class="btn s m" ${pg<=1?'disabled':''} onclick="goPg('${id}',${pg-1})" aria-label="Halaman sebelumnya">‹ Sebelumnya</button><span class="pgn">Halaman ${pg} dari ${pages}</span><button type="button" class="btn s m" ${pg>=pages?'disabled':''} onclick="goPg('${id}',${pg+1})" aria-label="Halaman berikutnya">Berikutnya ›</button></div><p class="pgh">Di ponsel, geser tabel ke kiri atau kanan sampai ujung untuk pindah halaman.</p>`:''}</div>`;
+function goPg(id,n){pgmap[id]=n;applyRows(id)}
+function applyRows(id){
+  const t=document.getElementById(id);if(!t)return;
+  const q=qmap[id]||'';
+  const rows=[...t.querySelectorAll('tr')].slice(1).filter(r=>!r.querySelector('td[colspan]'));
+  const hit=rows.filter(r=>!q||r.textContent.toLowerCase().includes(q));
+  const pages=Math.max(1,Math.ceil(hit.length/pgSize)),pg=Math.min(Math.max(1,pgmap[id]||1),pages);
+  pgmap[id]=pg;
+  const from=(pg-1)*pgSize,to=from+pgSize,show=new Set(hit.slice(from,to));
+  rows.forEach(r=>{const v=show.has(r);r.style.display=v?'':'none';const c=r.querySelector('.ck');if(c&&!v)c.checked=false});
+  let n=t.parentNode.querySelector('.pager[data-t="'+id+'"]');
+  if(!n){n=document.createElement('div');n.className='pager';n.dataset.t=id;t.after(n)}
+  n.innerHTML=hit.length?pagerHtml(id,pg,pages,hit.length,from+1,Math.min(to,hit.length)):'';
+  ckUpd(id);
+}
+function filterRows(inp,id){qmap[id]=inp.value.toLowerCase();pgmap[id]=1;applyRows(id)}
+
+/* GESER UNTUK PINDAH HALAMAN */
+(function(){
+  let st=null;
+  document.addEventListener('touchstart',e=>{
+    const t=e.target.closest('table[id]');
+    if(!t||!document.querySelector('.pager[data-t="'+t.id+'"]')){st=null;return}
+    const sc=t.closest('.tw'),x=e.touches[0];
+    st={id:t.id,x:x.clientX,y:x.clientY,l:sc.scrollLeft<=2,r:sc.scrollLeft+sc.clientWidth>=sc.scrollWidth-2};
+  },{passive:true});
+  document.addEventListener('touchend',e=>{
+    if(!st)return;const c=e.changedTouches[0],dx=c.clientX-st.x,dy=c.clientY-st.y,k=st;st=null;
+    if(Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.5)return;
+    const pg=pgmap[k.id]||1;
+    if(dx<0&&k.r)goPg(k.id,pg+1);else if(dx>0&&k.l)goPg(k.id,pg-1);
+  },{passive:true});
+})();
+
+/* PILIH MASSAL */
+function ckAll(h,id){document.querySelectorAll('#'+id+' tr').forEach(r=>{const c=r.querySelector('.ck');if(c&&r.style.display!=='none')c.checked=h.checked});ckUpd(id)}
+function ckUpd(id){
+  const n=document.querySelectorAll('#'+id+' .ck:checked').length,t=document.querySelectorAll('#'+id+' .ck').length,b=$('#'+id+'Del'),all=document.querySelector('#'+id+' .ckh');
+  if(b){b.disabled=!n;b.textContent=(b.dataset.lbl||'Hapus terpilih')+' ('+n+')'}
+  if(all)all.checked=n>0&&n===t;
+}
+function delSel(id,kind){
+  const ids=[...document.querySelectorAll('#'+id+' .ck:checked')].map(c=>c.value);
+  if(!ids.length||(id==='visT'&&U().role==='duta'))return;
+  ask('Hapus '+ids.length+' '+kind+' terpilih? Tindakan ini tidak bisa dibatalkan.',()=>{
+    let skip=0;const busy=loans.filter(l=>!l.tglKembali);
+    if(id==='bkT'){const b=busyBooks(),ok=ids.filter(i=>!b.has(i));skip=ids.length-ok.length;books=books.filter(x=>!ok.includes(x.id))}
+    else if(id==='anT'){const b=new Set(busy.map(l=>l.peminjam)),ok=ids.filter(i=>{const m=members.find(x=>x.id===i);return m&&!b.has(m.nama+' ('+m.no+')')});skip=ids.length-ok.length;members=members.filter(m=>!ok.includes(m.id))}
+    else if(id==='visT'){visits=visits.filter(v=>!ids.includes(v.id))}
+    sv();msg=(ids.length-skip)+' '+kind+' dihapus.'+(skip?' '+skip+' dilewati karena masih dipinjam.':'');
+    bmsg=msg;route();msg='';bmsg='';
+  });
+}
+
+/* QR CODE (byte mode, koreksi galat M, versi 1-6) */
+function qrMatrix(text){
+  const bytes=[...new TextEncoder().encode(String(text))];
+  const CAP=[16,28,44,64,86,108],ECC=[10,16,26,18,24,16],BLK=[1,1,1,2,2,4];
+  let v=0;while(v<6&&bytes.length>CAP[v]-2)v++;
+  if(v>=6)return null;
+  const bits=[],put=(val,n)=>{for(let i=n-1;i>=0;i--)bits.push((val>>>i)&1)};
+  put(4,4);put(bytes.length,8);bytes.forEach(b=>put(b,8));
+  const capBits=CAP[v]*8;
+  put(0,Math.min(4,capBits-bits.length));
+  while(bits.length%8)bits.push(0);
+  for(let pad=0xEC;bits.length<capBits;pad^=0xEC^0x11)put(pad,8);
+  const data=[];for(let i=0;i<bits.length;i+=8){let b=0;for(let j=0;j<8;j++)b=b<<1|bits[i+j];data.push(b)}
+  const mul=(x,y)=>{let z=0;for(let i=7;i>=0;i--){z=(z<<1)^((z>>>7)*0x11D);z^=((y>>>i)&1)*x}return z};
+  const rs=(d,n)=>{const g=new Array(n).fill(0);g[n-1]=1;let r=1;
+    for(let i=0;i<n;i++){for(let j=0;j<n;j++){g[j]=mul(g[j],r);if(j+1<n)g[j]^=g[j+1]}r=mul(r,2)}
+    const rem=new Array(n).fill(0);
+    for(const b of d){const f=b^rem.shift();rem.push(0);g.forEach((c,i)=>{rem[i]^=mul(c,f)})}
+    return rem};
+  const nb=BLK[v],bl=CAP[v]/nb,blocks=[],eccs=[];
+  for(let i=0;i<nb;i++){const d=data.slice(i*bl,(i+1)*bl);blocks.push(d);eccs.push(rs(d,ECC[v]))}
+  const all=[];
+  for(let i=0;i<bl;i++)blocks.forEach(b=>all.push(b[i]));
+  for(let i=0;i<ECC[v];i++)eccs.forEach(e=>all.push(e[i]));
+  const size=21+4*v,M=[],F=[];
+  for(let i=0;i<size;i++){M.push(new Array(size).fill(false));F.push(new Array(size).fill(false))}
+  const set=(x,y,d)=>{M[y][x]=d;F[y][x]=true};
+  for(let i=0;i<size;i++){set(6,i,i%2===0);set(i,6,i%2===0)}
+  const finder=(cx,cy)=>{for(let dy=-4;dy<=4;dy++)for(let dx=-4;dx<=4;dx++){
+    const x=cx+dx,y=cy+dy,d=Math.max(Math.abs(dx),Math.abs(dy));
+    if(x>=0&&x<size&&y>=0&&y<size)set(x,y,d!==2&&d!==4)}};
+  finder(3,3);finder(size-4,3);finder(3,size-4);
+  if(v>=1){const c=size-7;for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)set(c+dx,c+dy,Math.max(Math.abs(dx),Math.abs(dy))!==1)}
+  const fmt=mask=>{
+    const d=mask;let r=d;for(let i=0;i<10;i++)r=(r<<1)^((r>>>9)*0x537);
+    const b=((d<<10)|r)^0x5412,g=i=>((b>>>i)&1)===1;
+    for(let i=0;i<=5;i++)set(8,i,g(i));
+    set(8,7,g(6));set(8,8,g(7));set(7,8,g(8));
+    for(let i=9;i<15;i++)set(14-i,8,g(i));
+    for(let i=0;i<8;i++)set(size-1-i,8,g(i));
+    for(let i=8;i<15;i++)set(8,size-15+i,g(i));
+    set(8,size-8,true)};
+  fmt(0);
+  let k=0;
+  for(let right=size-1;right>=1;right-=2){
+    if(right===6)right=5;
+    for(let vert=0;vert<size;vert++)for(let j=0;j<2;j++){
+      const x=right-j,up=((right+1)&2)===0,y=up?size-1-vert:vert;
+      if(!F[y][x]&&k<all.length*8){M[y][x]=((all[k>>>3]>>>(7-(k&7)))&1)===1;k++}}}
+  const mf=[(x,y)=>(x+y)%2===0,(x,y)=>y%2===0,(x,y)=>x%3===0,(x,y)=>(x+y)%3===0,
+    (x,y)=>(Math.floor(x/3)+Math.floor(y/2))%2===0,(x,y)=>x*y%2+x*y%3===0,
+    (x,y)=>(x*y%2+x*y%3)%2===0,(x,y)=>((x+y)%2+x*y%3)%2===0];
+  const apply=m=>{for(let y=0;y<size;y++)for(let x=0;x<size;x++)if(!F[y][x]&&mf[m](x,y))M[y][x]=!M[y][x]};
+  const pen=()=>{let p=0;
+    for(let t=0;t<2;t++)for(let a=0;a<size;a++){let run=1,prev=null;
+      for(let b=0;b<size;b++){const c=t?M[b][a]:M[a][b];
+        if(c===prev){run++;if(run===5)p+=3;else if(run>5)p++}else{run=1;prev=c}}}
+    for(let y=0;y<size-1;y++)for(let x=0;x<size-1;x++){const c=M[y][x];
+      if(c===M[y][x+1]&&c===M[y+1][x]&&c===M[y+1][x+1])p+=3}
+    let dark=0;M.forEach(r=>r.forEach(c=>{if(c)dark++}));
+    return p+(Math.ceil(Math.abs(dark*20-size*size*10)/(size*size))-1)*10};
+  let best=0,bp=1e9;
+  for(let m=0;m<8;m++){apply(m);fmt(m);const p=pen();if(p<bp){bp=p;best=m}apply(m)}
+  apply(best);fmt(best);
+  return M;
+}
+function qrSvg(text){
+  const m=qrMatrix(text);if(!m)return '';
+  const n=m.length;let d='';
+  m.forEach((r,y)=>r.forEach((c,x)=>{if(c)d+='M'+(x+4)+' '+(y+4)+'h1v1h-1z'}));
+  return `<svg viewBox="0 0 ${n+8} ${n+8}" shape-rendering="crispEdges" role="img" aria-label="Kode QR ${esc(text)}"><rect width="100%" height="100%" fill="#fff"/><path d="${d}" fill="#16203a"/></svg>`;
+}
+
+/* UNDUH PDF KARTU */
+async function kPdf(){
+  const sel=members.filter(m=>kSel.has(m.id));if(!sel.length)return;
+  if(!window.PDFLib){ask('Pustaka PDF belum termuat. Periksa koneksi internet, lalu muat ulang halaman.');return}
+  const {PDFDocument,StandardFonts,rgb}=window.PDFLib,mm=72/25.4,pw=210*mm,ph=297*mm,cw=85.6*mm,ch=54*mm;
+  const doc=await PDFDocument.create();
+  const fs=await doc.embedFont(StandardFonts.TimesRomanBold),fr=await doc.embedFont(StandardFonts.Helvetica),fm=await doc.embedFont(StandardFonts.CourierBold);
+  let img=null;if(logo){try{img=await doc.embedPng(logo)}catch(e){}}
+  const ink=rgb(.114,.169,.31),gold=rgb(.949,.694,.208),tx=rgb(.086,.125,.227),mut=rgb(.357,.396,.502),white=rgb(1,1,1);
+  const safe=t=>String(t==null?'':t).replace(/[^\x20-\x7E\xA0-\xFF]/g,'?');
+  const fit=(t,font,size,min,max)=>{let z=size;while(z>min&&font.widthOfTextAtSize(t,z)>max)z-=.5;return z};
+  const nameLines=(t,font,max)=>{
+    let z=13;while(z>9&&font.widthOfTextAtSize(t,z)>max)z-=.5;
+    if(font.widthOfTextAtSize(t,z)<=max)return{l:[t],z};
+    const w=t.split(' ');let best=null;
+    for(let i=1;i<w.length;i++){const l=[w.slice(0,i).join(' '),w.slice(i).join(' ')],mw=Math.max(...l.map(q=>font.widthOfTextAtSize(q,10)));if(!best||mw<best.mw)best={mw,l}}
+    const l=best?best.l:[t];let z2=10;
+    while(z2>6&&Math.max(...l.map(q=>font.widthOfTextAtSize(q,z2)))>max)z2-=.5;
+    return{l,z:z2}};
+  const gx=(pw-(2*85.6+6)*mm)/2,gy=(ph-(5*54+4*3)*mm)/2;
+  let page=null;
+  sel.forEach((m,i)=>{
+    const k=i%10;if(k===0)page=doc.addPage([pw,ph]);
+    const x=gx+(k%2)*(85.6+6)*mm,top=ph-gy-Math.floor(k/2)*(54+3)*mm,y=top-ch;
+    page.drawRectangle({x,y,width:cw,height:ch,color:white,borderColor:rgb(.81,.84,.9),borderWidth:.7});
+    page.drawRectangle({x,y:top-12*mm,width:cw,height:12*mm,color:ink});
+    page.drawRectangle({x,y:top-13.2*mm,width:cw,height:1.2*mm,color:gold});
+    let x0=x+4*mm;
+    if(img){const h=8*mm,w=Math.min(img.width*h/img.height,16*mm);
+      page.drawRectangle({x:x0-.6*mm,y:top-10.6*mm,width:w+1.2*mm,height:h+1.2*mm,color:white});
+      page.drawImage(img,{x:x0,y:top-10*mm,width:w,height:h});x0+=w+3*mm}
+    const ln=safe(libName||'Perpustakaan');page.drawText(ln,{x:x0,y:top-6.4*mm,size:fit(ln,fs,11,6,cw-(x0-x)-4*mm),font:fs,color:white});
+    page.drawText('Kartu Anggota',{x:x0,y:top-9.6*mm,size:6.5,font:fr,color:rgb(.85,.88,.95)});
+    const qs=22*mm,qx=x+cw-4*mm-qs,qy=top-17*mm-qs,maxW=qx-(x+4*mm)-5*mm;
+    const nm=nameLines(safe(m.nama),fs,maxW),two=nm.l.length>1,ny=two?21.5:24;
+    nm.l.forEach((ln,j)=>page.drawText(ln,{x:x+4*mm,y:top-(ny+j*4)*mm,size:nm.z,font:fs,color:tx}));
+    const no=safe(m.no);
+    page.drawText(no,{x:x+4*mm,y:top-(two?31:30)*mm,size:fit(no,fm,10.5,7,maxW),font:fm,color:ink});
+    if(m.kelas){const kl=safe(m.kelas);page.drawText(kl,{x:x+4*mm,y:top-(two?35.5:34.5)*mm,size:fit(kl,fr,8,5.5,maxW),font:fr,color:mut})}
+    const q=qrMatrix(m.no);
+    if(q){const n=q.length,c=qs/n;
+      for(let r=0;r<n;r++)for(let cc=0;cc<n;cc++)if(q[r][cc])page.drawRectangle({x:qx+cc*c,y:qy+qs-(r+1)*c,width:c+.12,height:c+.12,color:tx})}
+    const tg=m.tgl?m.tgl.split('-').reverse().join('/'):'',wt='Wajib dibawa saat meminjam';
+    page.drawText('Bergabung '+tg,{x:x+4*mm,y:y+3*mm,size:6,font:fr,color:mut});
+    page.drawText(wt,{x:x+cw-4*mm-fr.widthOfTextAtSize(wt,6),y:y+3*mm,size:6,font:fr,color:mut});
+  });
+  await savePdf(await doc.save(),'kartu-anggota.pdf');
+}
+
+/* KARTU ANGGOTA */
+var kSel=new Set(),kq='';
+const kMatch=m=>{const q=kq.toLowerCase();return !q||(m.nama+' '+m.no+' '+(m.kelas||'')).toLowerCase().includes(q)};
+function vKartu(){
+  if(!members.length)return `<h1>Kartu Anggota</h1><p class="sub">Cetak kartu anggota perpustakaan.</p><div class="card"><p class="sub" style="margin:0">Belum ada anggota. Tambahkan anggota dulu di menu Anggota.</p></div>`;
+  return `<h1>Kartu Anggota</h1><p class="sub">Pilih anggota yang kartunya ingin dicetak. Ukuran kartu 85,6 × 54 mm (seukuran kartu ATM), muat 10 kartu per lembar A4.</p>
+  <div class="card"><div class="flex" style="margin-bottom:10px"><input value="${esc(kq)}" placeholder="Cari nama, nomor, atau kelas…" oninput="kq=this.value;kList()" style="flex:1 1 220px;width:auto"><button class="btn s m" onclick="kAll()">Pilih semua yang tampil</button><button class="btn s m" onclick="kSel.clear();kList()">Kosongkan</button></div><div id="kl" class="kl"></div></div>
+  <div class="card pr"><div class="flex" style="justify-content:space-between;margin-bottom:10px"><h2 style="margin:0">Pratinjau kartu</h2><div class="flex"><button class="btn" id="kpdf" onclick="kPdf()">Unduh PDF</button><button class="btn s" id="kprint" onclick="kPrint()">Cetak</button></div></div><p class="note" style="margin:0 0 12px">Setiap kartu memiliki kode QR yang berbeda, berisi nomor anggota. Tombol Unduh PDF membuat berkas siap cetak (10 kartu per lembar A4). Jika tombol Cetak tidak merespons, gunakan Unduh PDF atau buka halaman ini di tab sendiri lalu tekan Ctrl+P.</p><div id="kp" class="kgrid"></div></div>`;
+}
+function kList(){
+  const l=$('#kl');if(!l)return;
+  const r=members.filter(kMatch);
+  l.innerHTML=r.length?r.map(m=>`<label class="kit"><input type="checkbox" value="${m.id}" ${kSel.has(m.id)?'checked':''} onchange="kTog(this)"><span><b>${esc(m.nama)}</b><small>${esc(m.no)}${m.kelas?', '+esc(m.kelas):''}</small></span></label>`).join(''):'<p class="sub" style="margin:0">Tidak ada anggota yang cocok.</p>';
+  kPrev();
+}
+function kTog(c){if(c.checked)kSel.add(c.value);else kSel.delete(c.value);kPrev()}
+function kAll(){members.filter(kMatch).forEach(m=>kSel.add(m.id));kList()}
+function kCard(m){
+  const tgl=m.tgl?m.tgl.split('-').reverse().join('/'):'';
+  return `<div class="kc"><div class="kh"><div class="kb">${logo?`<img src="${logo}" alt="">`:'<i class="mark"></i>'}<div><b>${esc(libName||'Perpustakaan')}</b><small>Kartu Anggota</small></div></div></div><div class="kbd"><div class="ktx"><div class="kn${m.nama.length>26?' s':''}">${esc(m.nama)}</div><div class="kno">${esc(m.no)}</div><div class="km">${m.kelas?esc(m.kelas):'&nbsp;'}</div></div><div class="kq">${qrSvg(m.no)}</div></div><div class="kf"><span>Bergabung ${tgl}</span><span>Wajib dibawa saat meminjam</span></div></div>`;
+}
+function kPrev(){
+  const sel=members.filter(m=>kSel.has(m.id)),b=$('#kprint');
+  $('#kp').innerHTML=sel.length?sel.map(kCard).join(''):'<p class="sub" style="margin:0">Centang anggota untuk melihat pratinjau kartu.</p>';
+  if(b){b.textContent='Cetak ('+sel.length+')';b.disabled=!sel.length}const pd=$('#kpdf');if(pd){pd.textContent='Unduh PDF ('+sel.length+')';pd.disabled=!sel.length}
+}
+function kPrint(){try{window.print()}catch(e){ask('Cetak langsung tidak tersedia di sini. Buka halaman ini di tab sendiri, lalu tekan Ctrl+P.')}}
+
+/* DIALOG KONFIRMASI */
+function ask(t,fn,lbl,alt){
+  const o=document.createElement('div');o.className='ov';
+  o.innerHTML=`<div class="dlg"><p style="margin:0 0 14px">${esc(t)}</p><div class="flex" style="justify-content:flex-end"><button class="btn s" id="no">${fn?'Batal':'Tutup'}</button>${alt?`<button class="btn s" id="alt">${esc(alt.lbl)}</button>`:''}${fn?`<button class="btn" id="yes" ${lbl?'':'style="background:var(--bad)"'}>${lbl||'Ya, hapus'}</button>`:''}</div></div>`;
+  document.body.appendChild(o);
+  o.querySelector('#no').onclick=()=>o.remove();
+  if(alt)o.querySelector('#alt').onclick=()=>{o.remove();alt.fn()};
+  if(fn)o.querySelector('#yes').onclick=()=>{o.remove();fn()};
+}
+
+/* PENCARIAN PEMINJAMAN */
+function initPinjam(){fillBooks();fillMembers()}
+function fillBooks(){
+  const el=$('#bsel');if(!el)return;const s=($('#sb').value||'').toLowerCase();
+  const r=books.filter(b=>avail(b)>0&&(!s||[b.judul,b.penulis,b.kode,b.isbn].some(x=>String(x||'').toLowerCase().includes(s))));
+  el.innerHTML=r.length?r.map(b=>`<option value="${b.id}">${esc(b.judul)}${b.kode?' ['+esc(b.kode)+']':''} (${avail(b)} tersedia)</option>`).join(''):'<option value="">Tidak ada buku yang cocok</option>';
+}
+function fillMembers(){
+  const el=$('#msel');if(!el)return;const s=($('#sm').value||'').toLowerCase();
+  const r=members.filter(m=>!s||(m.nama+' '+m.no+' '+(m.kelas||'')).toLowerCase().includes(s));
+  el.innerHTML=r.length?r.map(m=>`<option>${esc(m.nama)} (${esc(m.no)})</option>`).join(''):'<option value="">Tidak ada anggota yang cocok</option>';
+}
+
+/* PEMINJAMAN */
+function vPinjam(){
+  const act=loans.filter(l=>!l.tglKembali),done=loans.filter(l=>l.tglKembali).slice(-200).reverse();
+  const ok=books.filter(b=>avail(b)>0);
+  return `<h1>Peminjaman</h1><p class="sub">Catat peminjaman dan pengembalian buku. Denda keterlambatan ${rp(fineRate)} per hari.</p><p class="note" style="margin:0 0 10px">${esc(msg)}</p>
+  <div class="card"><h2>Pinjam buku</h2><form onsubmit="pinjam(event)"><div class="row"><div><label>Buku</label><input id="sb" placeholder="Cari judul, penulis, atau kode buku…" oninput="fillBooks()" style="margin-bottom:6px"><select name="b" id="bsel" required></select></div><div><label>Peminjam</label>${members.length?'<input id="sm" placeholder="Cari nama atau nomor anggota…" oninput="fillMembers()" style="margin-bottom:6px"><select name="n" id="msel" required></select>':'<input name="n" placeholder="Nama (atau tambah anggota dulu)" required>'}</div><div><label>Lama pinjam (hari)</label><input name="d" type="number" min="1" value="7" required></div></div><button class="btn" ${ok.length?'':'disabled'}>Catat peminjaman</button></form></div>
+  <div class="card tw"><h2>Pengembalian: sedang dipinjam (${act.length})</h2><div class="flex" style="margin-bottom:8px"><input placeholder="Cari nama peminjam atau judul buku…" oninput="filterRows(this,'actT')" style="flex:1 1 220px;width:auto">${pgSelect()}</div><table id="actT"><tr><th>Buku</th><th>Peminjam</th><th>Jatuh tempo</th><th>Denda</th><th></th></tr>${act.map(l=>`<tr><td>${esc(bk(l.bookId)?.judul)}</td><td>${esc(l.peminjam)}</td><td class="${l.jatuhTempo<today()?'late':''}">${l.jatuhTempo}${l.jatuhTempo<today()?' (terlambat)':''}</td><td class="${fineOf(l)?'late':''}">${fineOf(l)?rp(fineOf(l))+' ('+lateDays(l)+' hari)':'-'}</td><td><button class="btn s m" onclick="kembali('${l.id}')">Kembalikan</button></td></tr>`).join('')||'<tr><td colspan="5">Tidak ada.</td></tr>'}</table></div>
+  <div class="card tw"><h2>Riwayat pengembalian</h2><div class="flex" style="margin-bottom:8px"><input placeholder="Cari nama peminjam atau judul buku…" oninput="filterRows(this,'hisT')" style="flex:1 1 220px;width:auto">${pgSelect()}</div><table id="hisT"><tr><th>Buku</th><th>Peminjam</th><th>Dipinjam</th><th>Kembali</th><th>Denda</th></tr>${done.map(l=>`<tr><td>${esc(bk(l.bookId)?.judul)}</td><td>${esc(l.peminjam)}</td><td>${l.tglPinjam}</td><td>${l.tglKembali}</td><td class="${fineOf(l)?'late':''}">${fineOf(l)?rp(fineOf(l))+' ('+(paidInfo(l).paid?'lunas':'belum bayar')+')':'-'}</td></tr>`).join('')||'<tr><td colspan="5">Belum ada.</td></tr>'}</table></div>`;
+}
+function pinjam(e){e.preventDefault();const f=e.target;loans.push({id:'l'+Date.now(),bookId:f.b.value,peminjam:f.n.value.trim(),tglPinjam:today(),jatuhTempo:addDays(today(),+f.d.value||7),tglKembali:''});sv();route()}
+function kembali(id){
+  const l=loans.find(x=>x.id===id);if(!l)return;
+  const d=Math.max(0,dayDiff(l.jatuhTempo,today())),f=d*fineRate,jd=bk(l.bookId)?bk(l.bookId).judul:'buku';
+  const done=paid=>{
+    l.tglKembali=today();l.dendaHari=d;l.denda=f;
+    if(f>0){l.lunas=!!paid;if(paid){l.dibayar=f;l.tglBayar=today();l.ketKas='Denda keterlambatan '+jd}}
+    sv();msg=!f?'Buku dikembalikan tepat waktu, tanpa denda.':'Buku dikembalikan. Denda '+rp(f)+' ('+d+' hari x '+rp(fineRate)+'), '+(paid?'sudah dibayar dan masuk kas.':'belum dibayar. Catat pembayarannya di menu Kelola Denda.');
+    route();msg='';
+  };
+  if(f>0)ask(l.peminjam+' terlambat '+d+' hari. Denda '+rp(f)+' ('+d+' hari x '+rp(fineRate)+'). Apakah denda dibayar sekarang?',()=>done(true),'Kembalikan, denda lunas',{lbl:'Kembalikan, belum bayar',fn:()=>done(false)});
+  else done(false);
+}
+
+/* DENDA */
+var fineRate=(v=>Number.isFinite(v)&&v>=0?v:500)(Number(load('lib_fine',500)));
+const rp=n=>'Rp\u00a0'+String(Math.round(Number(n)||0)).replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const dayDiff=(a,b)=>Math.round((new Date(b)-new Date(a))/864e5);
+const lateDays=l=>Math.max(0,dayDiff(l.jatuhTempo,l.tglKembali||today()));
+const fineOf=l=>l.tglKembali&&l.denda!=null?l.denda:lateDays(l)*fineRate;
+
+/* LAPORAN BULANAN */
+const BLN=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const bln=m=>BLN[+m.slice(5,7)-1]+' '+m.slice(0,4);
+const lim=a=>a.slice(0,pgSize);
+const isLate=l=>l.tglKembali?l.tglKembali>l.jatuhTempo:l.jatuhTempo<today();
+const fmtD=d=>d?d.split('-').reverse().join('/'):'';
+function bulan0(m){
+  const lp=loans.filter(l=>l.tglPinjam.startsWith(m)),vs=visits.filter(v=>v.tgl.startsWith(m)),ret=loans.filter(l=>(l.tglKembali||'').startsWith(m));
+  return{lp,vs,kembali:ret.length,denda:ret.reduce((a,l)=>a+fineOf(l),0),kas:loans.reduce((a,l)=>{const pi=paidInfo(l);return pi.paid&&pi.date.startsWith(m)?a+pi.amount:a},0),belum:ret.filter(l=>l.lunas===false).reduce((a,l)=>a+fineOf(l),0),late:loans.filter(l=>l.tglKembali?(l.tglKembali.startsWith(m)&&l.tglKembali>l.jatuhTempo):(m===today().slice(0,7)&&l.jatuhTempo<today())),uniq:new Set(vs.map(v=>v.n.toLowerCase())).size};
+}
+function rank(list,key){
+  const g={};list.forEach(x=>{const k=key(x);g[k]=(g[k]||0)+1});
+  return Object.entries(g).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+}
+function months(){
+  const set=new Set([today().slice(0,7)]);
+  loans.forEach(l=>{set.add(l.tglPinjam.slice(0,7));if(l.tglKembali)set.add(l.tglKembali.slice(0,7))});
+  visits.forEach(v=>set.add(v.tgl.slice(0,7)));
+  return[...set].sort().reverse();
+}
+function repData(m){
+  const s=bulan(m),mm={};members.forEach(x=>mm[x.nama+' ('+x.no+')']=x);
+  const g={};s.lp.forEach(l=>{const x=g[l.peminjam]||(g[l.peminjam]={n:l.peminjam,c:0,late:0,fine:0});x.c++;if(isLate(l))x.late++;x.fine+=fineOf(l)});
+  const pr=Object.values(g).sort((a,b)=>b.c-a.c||a.n.localeCompare(b.n)).map(x=>({...x,kelas:(mm[x.n]&&mm[x.n].kelas)||'-'}));
+  const bt=l=>bk(l.bookId)?bk(l.bookId).judul:'(buku sudah dihapus)';
+  return{m,s,pr,bt,pv:rank(s.vs,v=>v.n),bb:rank(s.lp,bt),hist:months().map(x=>({m:x,r:bulan(x)}))};
+}
+function podium(title,arr,unit){
+  return `<div class="card" style="margin:0"><h2>${title}</h2>${arr.length?arr.slice(0,3).map(([n,c],i)=>`<div class="flex" style="justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bd)"><span>${['🥇','🥈','🥉'][i]} ${esc(n)}</span><b>${c} ${unit}</b></div>`).join(''):'<p class="sub" style="margin:0">Belum ada data bulan ini.</p>'}</div>`;
+}
+function vLaporan(){
+  const ms=months(),cur=today().slice(0,7),m=ms.includes(rMonth)?rMonth:cur,d=repData(m),s=d.s;
+  const st=(n,t,c)=>`<div class="card stat"><b${c?' style="color:var(--bad)"':''}>${n}</b><span>${t}</span></div>`;
+  const tb=(h,rows,cs)=>`<table><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.join('')||`<tr><td colspan="${cs}">Belum ada data.</td></tr>`}</table>`;
+  return `<h1>Laporan Bulanan</h1><p class="sub">Laporan per bulan beserta riwayat bulan-bulan sebelumnya. Denda keterlambatan ${rp(fineRate)} per hari.</p>
+  <div class="card flex" style="justify-content:space-between"><div class="flex"><label style="margin:0">Bulan</label><select style="width:auto" onchange="rMonth=this.value;route()">${ms.map(x=>`<option value="${x}" ${x===m?'selected':''}>${bln(x)}</option>`).join('')}</select></div><div class="flex">${pgSelect()}<button class="btn" onclick="repPdf()">Unduh PDF</button><button class="btn s" onclick="repPrint()">Cetak</button></div></div>
+  <div class="stats">${st(s.lp.length,'Peminjaman')}${st(s.kembali,'Pengembalian')}${st(s.late.length,'Terlambat',1)}${st(rp(s.denda),'Denda tercatat')}${st(rp(s.masukKas),'Pemasukan kas')}${st(rp(s.keluar),'Pengeluaran kas')}${st(rp(s.saldo),'Saldo kas')}${st(rp(s.belum),'Denda belum dibayar',s.belum>0)}${st(s.vs.length,'Kunjungan')}${st(s.uniq,'Pengunjung berbeda')}</div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-bottom:14px">${podium('3 anggota peminjam terbanyak',d.pr.map(x=>[x.n,x.c]),'buku')}${podium('3 pengunjung terbanyak',d.pv,'kali datang')}</div>
+  <div class="card tw"><h2>Peminjam bulan ${bln(m)}</h2>${tb(['#','Nama (No. anggota)','Kelas / instansi','Total pinjam'],lim(d.pr).map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.n)}</td><td>${esc(x.kelas)}</td><td><b>${x.c}</b></td></tr>`),4)}</div>
+  <div class="card tw"><h2>Buku paling sering dipinjam</h2>${tb(['Judul','Kali dipinjam'],lim(d.bb).map(([j,n])=>`<tr><td>${esc(j)}</td><td>${n}</td></tr>`),2)}</div>
+  <div class="card tw"><h2>Peminjaman terlambat dan denda</h2>${tb(['Buku','Peminjam','Jatuh tempo','Status','Denda'],lim(s.late).map(l=>`<tr><td>${esc(d.bt(l))}</td><td>${esc(l.peminjam)}</td><td class="late">${l.jatuhTempo}</td><td>${l.tglKembali?'Dikembalikan '+l.tglKembali:'Belum kembali'}</td><td class="late">${rp(fineOf(l))}</td></tr>`),5)}</div>
+  <div class="card tw"><h2>Riwayat laporan bulanan</h2>${tb(['Bulan','Peminjaman','Pengembalian','Terlambat','Denda','Kunjungan','Pengunjung berbeda',''],lim(d.hist).map(({m:x,r})=>`<tr${x===m?' style="background:var(--pri2)"':''}><td>${bln(x)}</td><td>${r.lp.length}</td><td>${r.kembali}</td><td>${r.late.length}</td><td>${rp(r.denda)}</td><td>${r.vs.length}</td><td>${r.uniq}</td><td><button class="btn s m" onclick="rMonth='${x}';route();scrollTo(0,0)">Lihat</button></td></tr>`),8)}</div>
+  <div id="rptp" class="rptp">${repPrintHtml(d)}</div>`;
+}
+function repPrintHtml(d){
+  const s=d.s,t=(h,rows)=>`<table class="rt"><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.join('')||`<tr><td colspan="${h.length}">Tidak ada data.</td></tr>`}</table>`;
+  const top3=(a,u)=>a.slice(0,3).map(([n,c])=>`<li>${esc(n)}: <b>${c} ${u}</b></li>`).join('')||'<li>Belum ada data.</li>';
+  return `<div class="rh"><h1>${esc(libName||'Perpustakaan')}</h1><p>Laporan Bulanan ${bln(d.m)}. Dicetak ${fmtD(today())}.</p></div>
+  <table class="rt"><tr><th>Peminjaman</th><th>Pengembalian</th><th>Terlambat</th><th>Kunjungan</th><th>Pengunjung berbeda</th></tr><tr><td>${s.lp.length}</td><td>${s.kembali}</td><td>${s.late.length}</td><td>${s.vs.length}</td><td>${s.uniq}</td></tr></table>
+  <table class="rt"><tr><th>Denda tercatat</th><th>Denda belum dibayar</th><th>Pemasukan kas</th><th>Pengeluaran kas</th><th>Saldo kas</th></tr><tr><td>${rp(s.denda)}</td><td>${rp(s.belum)}</td><td>${rp(s.masukKas)}</td><td>${rp(s.keluar)}</td><td>${rp(s.saldo)}</td></tr></table>
+  <h2>3 anggota peminjam terbanyak</h2><ol>${top3(d.pr.map(x=>[x.n,x.c]),'buku')}</ol>
+  <h2>3 pengunjung terbanyak</h2><ol>${top3(d.pv,'kali datang')}</ol>
+  <h2>Peminjam bulan ${bln(d.m)}</h2>${t(['No','Nama (No. anggota)','Kelas / instansi','Total pinjam'],d.pr.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.n)}</td><td>${esc(x.kelas)}</td><td>${x.c}</td></tr>`))}
+  <h2>Buku paling sering dipinjam</h2>${t(['No','Judul','Kali dipinjam'],d.bb.map(([j,n],i)=>`<tr><td>${i+1}</td><td>${esc(j)}</td><td>${n}</td></tr>`))}
+  <h2>Peminjaman terlambat dan denda</h2>${t(['Buku','Peminjam','Jatuh tempo','Status','Denda'],s.late.map(l=>`<tr><td>${esc(d.bt(l))}</td><td>${esc(l.peminjam)}</td><td>${fmtD(l.jatuhTempo)}</td><td>${l.tglKembali?'Dikembalikan '+fmtD(l.tglKembali):'Belum kembali'}</td><td>${rp(fineOf(l))}</td></tr>`))}
+  <h2>Riwayat laporan bulanan</h2>${t(['Bulan','Peminjaman','Pengembalian','Terlambat','Denda','Kunjungan','Pengunjung berbeda'],d.hist.map(({m:x,r})=>`<tr><td>${bln(x)}</td><td>${r.lp.length}</td><td>${r.kembali}</td><td>${r.late.length}</td><td>${rp(r.denda)}</td><td>${r.vs.length}</td><td>${r.uniq}</td></tr>`))}`;
+}
+function repPrint(){try{window.print()}catch(e){ask('Cetak langsung tidak tersedia di sini. Gunakan Unduh PDF, atau buka halaman ini di tab sendiri lalu tekan Ctrl+P.')}}
+async function saveBytes(bytes,name,mime){
+  const dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;
+  if(!dl){
+    if(window.APP_CONFIG){const u=URL.createObjectURL(new Blob([bytes],{type:mime})),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);return}
+    ask('Unduhan langsung tidak tersedia di tampilan ini. Buka halaman ini di tab sendiri lalu pakai tombol Cetak dan pilih Simpan sebagai PDF.');return}
+  try{await dl.save({filename:name,data:bytes})}
+  catch(e){if(!e||e.code!=='declined')ask('Berkas belum bisa disimpan'+(e&&e.code?' (kode: '+e.code+')':'')+'. Coba lagi, atau pakai tombol Cetak dan pilih Simpan sebagai PDF.')}
+}
+const savePdf=(bytes,name)=>saveBytes(bytes,name,'application/pdf');
+async function repPdf(){
+  if(!window.PDFLib){ask('Pustaka PDF belum termuat. Periksa koneksi internet, lalu muat ulang halaman.');return}
+  const ms=months(),m=ms.includes(rMonth)?rMonth:today().slice(0,7),d=repData(m),s=d.s;
+  const {PDFDocument,StandardFonts,rgb}=window.PDFLib,mm=72/25.4,PW=210*mm,PH=297*mm,ML=14*mm,CW=PW-2*ML;
+  const doc=await PDFDocument.create();
+  const F=await doc.embedFont(StandardFonts.Helvetica),FB=await doc.embedFont(StandardFonts.HelveticaBold),FS=await doc.embedFont(StandardFonts.TimesRomanBold);
+  let img=null;if(logo){try{img=await doc.embedPng(logo)}catch(e){}}
+  const ink=rgb(.114,.169,.31),gold=rgb(.949,.694,.208),tx=rgb(.086,.125,.227),mut=rgb(.357,.396,.502),tint=rgb(.89,.914,.965),white=rgb(1,1,1),red=rgb(.71,.14,.09),zebra=rgb(.965,.972,.99);
+  const safe=t=>String(t==null?'':t).replace(/[^\x20-\x7E\xA0-\xFF]/g,'?');
+  const cut=(t,f,z,w)=>{t=safe(t);if(f.widthOfTextAtSize(t,z)<=w)return t;while(t.length>1&&f.widthOfTextAtSize(t+'...',z)>w)t=t.slice(0,-1);return t+'...'};
+  let page,y;
+  const newPage=()=>{page=doc.addPage([PW,PH]);y=PH-16*mm};
+  newPage();
+  page.drawRectangle({x:0,y:PH-30*mm,width:PW,height:30*mm,color:ink});
+  page.drawRectangle({x:0,y:PH-31.5*mm,width:PW,height:1.5*mm,color:gold});
+  let lw=0;
+  if(img){const h=16*mm;lw=Math.min(img.width*h/img.height,30*mm);
+    page.drawRectangle({x:PW-ML-lw-1*mm,y:PH-24*mm,width:lw+2*mm,height:h+2*mm,color:white});
+    page.drawImage(img,{x:PW-ML-lw,y:PH-23*mm,width:lw,height:h})}
+  page.drawText(cut(libName||'Perpustakaan',FS,19,CW-lw-6*mm),{x:ML,y:PH-14*mm,size:19,font:FS,color:white});
+  page.drawText('Laporan Bulanan '+bln(m),{x:ML,y:PH-21*mm,size:11.5,font:FB,color:white});
+  page.drawText('Dicetak '+fmtD(today()),{x:ML,y:PH-26.5*mm,size:8,font:F,color:rgb(.85,.88,.95)});
+  y=PH-40*mm;
+  const stats=[['Peminjaman',s.lp.length],['Pengembalian',s.kembali],['Terlambat',s.late.length],['Denda tercatat',rp(s.denda)],['Pemasukan kas',rp(s.masukKas)],['Pengeluaran kas',rp(s.keluar)],['Saldo kas',rp(s.saldo)],['Denda belum dibayar',rp(s.belum)],['Kunjungan',s.vs.length],['Pengunjung berbeda',s.uniq]];
+  const bw=(CW-8*mm)/3,bh=15*mm;
+  stats.forEach((q,i)=>{const bx=ML+(i%3)*(bw+4*mm),by=y-Math.floor(i/3)*(bh+3*mm)-bh;
+    page.drawRectangle({x:bx,y:by,width:bw,height:bh,color:tint});
+    page.drawRectangle({x:bx,y:by,width:1.2*mm,height:bh,color:gold});
+    page.drawText(safe(q[1]),{x:bx+4*mm,y:by+6.5*mm,size:15,font:FS,color:ink});
+    page.drawText(q[0],{x:bx+4*mm,y:by+2.5*mm,size:7.5,font:F,color:mut})});
+  y-=Math.ceil(stats.length/3)*(bh+3*mm)+8*mm;
+  const hw=(CW-6*mm)/2,col=(x,title,arr,unit)=>{
+    page.drawText(title,{x,y,size:10.5,font:FS,color:ink});
+    page.drawRectangle({x,y:y-2*mm,width:hw,height:.4*mm,color:gold});
+    let yy=y-8*mm;
+    if(!arr.length)page.drawText('Belum ada data.',{x,y:yy,size:9,font:F,color:mut});
+    arr.slice(0,3).forEach(([n,c],i)=>{
+      const u=c+' '+unit,uw=FB.widthOfTextAtSize(u,9);
+      page.drawText((i+1)+'.',{x,y:yy,size:9,font:FB,color:gold});
+      page.drawText(cut(n,F,9,hw-uw-10*mm),{x:x+5*mm,y:yy,size:9,font:F,color:tx});
+      page.drawText(u,{x:x+hw-uw,y:yy,size:9,font:FB,color:ink});yy-=6*mm})};
+  col(ML,'3 anggota peminjam terbanyak',d.pr.map(x=>[x.n,x.c]),'buku');
+  col(ML+hw+6*mm,'3 pengunjung terbanyak',d.pv,'kali');
+  y-=30*mm;
+  const table=(title,heads,w,rows,right)=>{
+    if(y-30*mm<16*mm)newPage();
+    page.drawText(title,{x:ML,y,size:11.5,font:FS,color:ink});y-=5*mm;
+    const head=()=>{page.drawRectangle({x:ML,y:y-6*mm,width:CW,height:6*mm,color:tint});
+      let x=ML;heads.forEach((h,i)=>{const tw=FB.widthOfTextAtSize(h,8);page.drawText(h,{x:right.includes(i)?x+w[i]*mm-1.5*mm-tw:x+1.5*mm,y:y-4.2*mm,size:8,font:FB,color:ink});x+=w[i]*mm});y-=6*mm};
+    head();
+    if(!rows.length){page.drawText('Tidak ada data.',{x:ML+1.5*mm,y:y-4.5*mm,size:8.5,font:F,color:mut});y-=7*mm}
+    rows.forEach((r,ri)=>{
+      if(y-6*mm<16*mm){newPage();head()}
+      if(ri%2)page.drawRectangle({x:ML,y:y-6*mm,width:CW,height:6*mm,color:zebra});
+      let x=ML;r.forEach((c,i)=>{const t=cut(c.t!=null?c.t:c,F,8.5,w[i]*mm-3*mm),tw=F.widthOfTextAtSize(t,8.5);
+        page.drawText(t,{x:right.includes(i)?x+w[i]*mm-1.5*mm-tw:x+1.5*mm,y:y-4.2*mm,size:8.5,font:F,color:c.red?red:tx});x+=w[i]*mm});
+      y-=6*mm});
+    y-=7*mm;
+  };
+  table('Peminjam bulan '+bln(m),['No','Nama (No. anggota)','Kelas / instansi','Total pinjam'],[10,96,52,24],
+    d.pr.map((x,i)=>[String(i+1),x.n,x.kelas,String(x.c)]),[0,3]);
+  table('Buku paling sering dipinjam',['No','Judul','Kali dipinjam'],[10,142,30],d.bb.map(([j,n],i)=>[String(i+1),j,String(n)]),[0,2]);
+  table('Peminjaman terlambat dan denda',['Buku','Peminjam','Jatuh tempo','Status','Denda'],[50,44,24,38,26],
+    s.late.map(l=>[d.bt(l),l.peminjam,fmtD(l.jatuhTempo),l.tglKembali?'Kembali '+fmtD(l.tglKembali):'Belum kembali',{t:rp(fineOf(l)),red:true}]),[4]);
+  table('Riwayat laporan bulanan',['Bulan','Pinjam','Kembali','Terlambat','Denda','Kunjungan','Pengunjung'],[34,20,22,24,34,24,24],
+    d.hist.map(({m:x,r})=>[bln(x),String(r.lp.length),String(r.kembali),String(r.late.length),rp(r.denda),String(r.vs.length),String(r.uniq)]),[1,2,3,4,5,6]);
+  const pages=doc.getPages();
+  pages.forEach((p,i)=>{
+    p.drawText(cut(libName||'Perpustakaan',F,7.5,CW/2),{x:ML,y:8*mm,size:7.5,font:F,color:mut});
+    const t='Halaman '+(i+1)+' dari '+pages.length;
+    p.drawText(t,{x:PW-ML-F.widthOfTextAtSize(t,7.5),y:8*mm,size:7.5,font:F,color:mut});
+  });
+  await savePdf(await doc.save(),'laporan-'+m+'.pdf');
+}
+
+function visList(){
+  const el=$('#visB');if(!el)return;
+  const s=($('#vq').value||'').toLowerCase(),can=U().role!=='duta';
+  const r=visits.filter(v=>!s||(v.n+' '+v.tgl).toLowerCase().includes(s)).sort((a,b)=>b.tgl.localeCompare(a.tgl)||b.id.localeCompare(a.id)).slice(0,pgSize);
+  el.innerHTML=r.map(v=>`<tr>${can?`<td><input type="checkbox" class="ck" value="${v.id}" onchange="ckUpd('visT')" aria-label="Pilih kunjungan"></td>`:''}<td>${esc(v.n)}</td><td>${v.tgl}</td><td>${can?`<button class="btn s m" onclick="editVisit='${v.id}';route();scrollTo(0,0)">Ubah</button> <button class="btn d m" onclick="delVisit('${v.id}')">Hapus</button>`:''}</td></tr>`).join('')||'<tr><td colspan="5">Tidak ada kunjungan.</td></tr>';ckUpd('visT');
+}
+function delVisit(id){
+  const v=visits.find(x=>x.id===id);
+  if(v&&U().role!=='duta')ask('Hapus catatan kunjungan '+v.n+' ('+v.tgl+')?',()=>{visits=visits.filter(x=>x.id!==id);if(editVisit===id)editVisit=null;sv();msg='Kunjungan dihapus.';route();msg=''});
+}
+
+/* LAPORAN KUNJUNGAN */
+var kFrom='',kTo='';
+const HARI=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const hariOf=t=>HARI[new Date(t+'T00:00:00').getDay()];
+const dec1=x=>(Math.round(x*10)/10).toFixed(1).replace('.',',');
+function kunRange(){
+  const t=today();let f=kFrom||t.slice(0,7)+'-01',e=kTo||t;
+  if(f>e){const x=f;f=e;e=x}
+  return[f,e];
+}
+function kunRep(){
+  const [f,e]=kunRange(),V=visits.filter(v=>v.tgl>=f&&v.tgl<=e).sort((a,b)=>a.tgl.localeCompare(b.tgl)||a.id.localeCompare(b.id));
+  const mm={};members.forEach(m=>mm[(m.nama+' ('+m.no+')').toLowerCase()]=m);
+  const isM=v=>!!mm[v.n.toLowerCase()],byDay={};
+  V.forEach(v=>{byDay[v.tgl]=(byDay[v.tgl]||0)+1});
+  const days=Object.keys(byDay).sort(),mem=V.filter(isM).length,span=Math.max(1,dayDiff(f,e)+1);
+  return{f,e,V,mm,isM,byDay,days,mem,tamu:V.length-mem,span,uniq:new Set(V.map(v=>v.n.toLowerCase())).size,top:rank(V,v=>v.n)};
+}
+function kunStats(){
+  const r=kunRep(),st=(n,t)=>`<div class="card stat"><b>${n}</b><span>${t}</span></div>`;
+  return st(r.V.length,'Total kunjungan')+st(r.uniq,'Pengunjung berbeda')+st(r.mem,'Kunjungan anggota')+st(r.tamu,'Kunjungan tamu');
+}
+function kunPrintHtml(){
+  const r=kunRep(),t=(h,rows)=>`<table class="rt"><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.join('')||`<tr><td colspan="${h.length}">Tidak ada data.</td></tr>`}</table>`;
+  const stt=n=>r.mm[n.toLowerCase()]?'Anggota':'Tamu',kls=n=>(r.mm[n.toLowerCase()]&&r.mm[n.toLowerCase()].kelas)||'-';
+  return `<div class="rh"><h1>${esc(libName||'Perpustakaan')}</h1><p>Laporan Kunjungan, ${fmtD(r.f)} sampai ${fmtD(r.e)}. Dicetak ${fmtD(today())}.</p></div>
+  <table class="rt"><tr><th>Total kunjungan</th><th>Pengunjung berbeda</th><th>Kunjungan anggota</th><th>Kunjungan tamu</th><th>Hari ada kunjungan</th><th>Rata-rata per hari</th></tr><tr><td>${r.V.length}</td><td>${r.uniq}</td><td>${r.mem}</td><td>${r.tamu}</td><td>${r.days.length}</td><td>${dec1(r.V.length/r.span)}</td></tr></table>
+  <h2>5 pengunjung terbanyak</h2>${t(['No','Nama','Status','Jumlah kunjungan'],r.top.slice(0,5).map(([n,c],i)=>`<tr><td>${i+1}</td><td>${esc(n)}</td><td>${stt(n)}</td><td>${c}</td></tr>`))}
+  <h2>Kunjungan per hari</h2>${t(['Tanggal','Hari','Jumlah kunjungan'],r.days.map(d=>`<tr><td>${fmtD(d)}</td><td>${hariOf(d)}</td><td>${r.byDay[d]}</td></tr>`))}
+  <h2>Rincian kunjungan</h2>${t(['No','Tanggal','Nama','Status','Kelas / instansi'],r.V.map((v,i)=>`<tr><td>${i+1}</td><td>${fmtD(v.tgl)}</td><td>${esc(v.n)}</td><td>${stt(v.n)}</td><td>${esc(kls(v.n))}</td></tr>`))}`;
+}
+function kunRefresh(){const a=$('#kvs'),b=$('#kvp');if(a)a.innerHTML=kunStats();if(b)b.innerHTML=kunPrintHtml()}
+function setKun(){kFrom=$('#kf').value;kTo=$('#kt').value;kunRefresh()}
+function kunPreset(k){
+  const t=today();
+  if(k==='bulan'){kFrom=t.slice(0,7)+'-01';kTo=t}
+  else if(k==='30'){kFrom=addDays(t,-29);kTo=t}
+  else{kFrom=visits.length?visits.reduce((m,v)=>v.tgl<m?v.tgl:m,t):t;kTo=t}
+  const [f,e]=kunRange();$('#kf').value=f;$('#kt').value=e;kunRefresh();
+}
+function kunPrint(){try{window.print()}catch(e){ask('Cetak langsung tidak tersedia di sini. Gunakan Unduh PDF, atau buka halaman ini di tab sendiri lalu tekan Ctrl+P.')}}
+async function kunPdf(){
+  if(!window.PDFLib){ask('Pustaka PDF belum termuat. Periksa koneksi internet, lalu muat ulang halaman.');return}
+  const r=kunRep(),{PDFDocument,StandardFonts,rgb}=window.PDFLib,mm=72/25.4,PW=210*mm,PH=297*mm,ML=14*mm,CW=PW-2*ML;
+  const doc=await PDFDocument.create();
+  const F=await doc.embedFont(StandardFonts.Helvetica),FB=await doc.embedFont(StandardFonts.HelveticaBold),FS=await doc.embedFont(StandardFonts.TimesRomanBold);
+  let img=null;if(logo){try{img=await doc.embedPng(logo)}catch(e){}}
+  const ink=rgb(.114,.169,.31),gold=rgb(.949,.694,.208),tx=rgb(.086,.125,.227),mut=rgb(.357,.396,.502),tint=rgb(.89,.914,.965),white=rgb(1,1,1),zebra=rgb(.965,.972,.99);
+  const safe=t=>String(t==null?'':t).replace(/[^\x20-\x7E\xA0-\xFF]/g,'?');
+  const cut=(t,f,z,w)=>{t=safe(t);if(f.widthOfTextAtSize(t,z)<=w)return t;while(t.length>1&&f.widthOfTextAtSize(t+'...',z)>w)t=t.slice(0,-1);return t+'...'};
+  let page=doc.addPage([PW,PH]),y;
+  page.drawRectangle({x:0,y:PH-30*mm,width:PW,height:30*mm,color:ink});
+  page.drawRectangle({x:0,y:PH-31.5*mm,width:PW,height:1.5*mm,color:gold});
+  let lw=0;
+  if(img){const h=16*mm;lw=Math.min(img.width*h/img.height,30*mm);
+    page.drawRectangle({x:PW-ML-lw-1*mm,y:PH-24*mm,width:lw+2*mm,height:h+2*mm,color:white});
+    page.drawImage(img,{x:PW-ML-lw,y:PH-23*mm,width:lw,height:h})}
+  page.drawText(cut(libName||'Perpustakaan',FS,19,CW-lw-6*mm),{x:ML,y:PH-14*mm,size:19,font:FS,color:white});
+  page.drawText('Laporan Kunjungan',{x:ML,y:PH-21*mm,size:11.5,font:FB,color:white});
+  page.drawText(fmtD(r.f)+' sampai '+fmtD(r.e)+'. Dicetak '+fmtD(today()),{x:ML,y:PH-26.5*mm,size:8,font:F,color:rgb(.85,.88,.95)});
+  y=PH-40*mm;
+  const stats=[['Total kunjungan',r.V.length],['Pengunjung berbeda',r.uniq],['Kunjungan anggota',r.mem],['Kunjungan tamu',r.tamu],['Hari ada kunjungan',r.days.length],['Rata-rata per hari',dec1(r.V.length/r.span)]];
+  const bw=(CW-8*mm)/3,bh=15*mm;
+  stats.forEach((q,i)=>{const bx=ML+(i%3)*(bw+4*mm),by=y-Math.floor(i/3)*(bh+3*mm)-bh;
+    page.drawRectangle({x:bx,y:by,width:bw,height:bh,color:tint});
+    page.drawRectangle({x:bx,y:by,width:1.2*mm,height:bh,color:gold});
+    page.drawText(safe(q[1]),{x:bx+4*mm,y:by+6.5*mm,size:15,font:FS,color:ink});
+    page.drawText(q[0],{x:bx+4*mm,y:by+2.5*mm,size:7.5,font:F,color:mut})});
+  y-=2*(bh+3*mm)+5*mm;
+  const newPage=()=>{page=doc.addPage([PW,PH]);y=PH-16*mm};
+  const table=(title,heads,w,rows,right)=>{
+    if(y-30*mm<16*mm)newPage();
+    page.drawText(title,{x:ML,y,size:11.5,font:FS,color:ink});y-=5*mm;
+    const head=()=>{page.drawRectangle({x:ML,y:y-6*mm,width:CW,height:6*mm,color:tint});
+      let x=ML;heads.forEach((h,i)=>{const tw=FB.widthOfTextAtSize(h,8);page.drawText(h,{x:right.includes(i)?x+w[i]*mm-1.5*mm-tw:x+1.5*mm,y:y-4.2*mm,size:8,font:FB,color:ink});x+=w[i]*mm});y-=6*mm};
+    head();
+    if(!rows.length){page.drawText('Tidak ada data.',{x:ML+1.5*mm,y:y-4.5*mm,size:8.5,font:F,color:mut});y-=7*mm}
+    rows.forEach((row,ri)=>{
+      if(y-6*mm<16*mm){newPage();head()}
+      if(ri%2)page.drawRectangle({x:ML,y:y-6*mm,width:CW,height:6*mm,color:zebra});
+      let x=ML;row.forEach((c,i)=>{const t=cut(c,F,8.5,w[i]*mm-3*mm),tw=F.widthOfTextAtSize(t,8.5);
+        page.drawText(t,{x:right.includes(i)?x+w[i]*mm-1.5*mm-tw:x+1.5*mm,y:y-4.2*mm,size:8.5,font:F,color:tx});x+=w[i]*mm});
+      y-=6*mm});
+    y-=7*mm;
+  };
+  const stt=n=>r.mm[n.toLowerCase()]?'Anggota':'Tamu',kls=n=>(r.mm[n.toLowerCase()]&&r.mm[n.toLowerCase()].kelas)||'-';
+  table('5 pengunjung terbanyak',['No','Nama','Status','Jumlah kunjungan'],[10,100,30,42],r.top.slice(0,5).map(([n,c],i)=>[String(i+1),n,stt(n),String(c)]),[0,3]);
+  table('Kunjungan per hari',['Tanggal','Hari','Jumlah kunjungan'],[50,80,52],r.days.map(d=>[fmtD(d),hariOf(d),String(r.byDay[d])]),[2]);
+  table('Rincian kunjungan',['No','Tanggal','Nama','Status','Kelas / instansi'],[10,26,86,20,40],r.V.map((v,i)=>[String(i+1),fmtD(v.tgl),v.n,stt(v.n),kls(v.n)]),[0]);
+  const pages=doc.getPages();
+  pages.forEach((p,i)=>{
+    p.drawText(cut(libName||'Perpustakaan',F,7.5,CW/2),{x:ML,y:8*mm,size:7.5,font:F,color:mut});
+    const t='Halaman '+(i+1)+' dari '+pages.length;
+    p.drawText(t,{x:PW-ML-F.widthOfTextAtSize(t,7.5),y:8*mm,size:7.5,font:F,color:mut});
+  });
+  await savePdf(await doc.save(),'laporan-kunjungan-'+r.f+'-sd-'+r.e+'.pdf');
+}
+
+/* KUNJUNGAN */
+function vKunjungan(){
+  const t=today(),td=visits.filter(v=>v.tgl===t).length,bl=visits.filter(v=>v.tgl.startsWith(t.slice(0,7))).length,ev=editVisit&&visits.find(v=>v.id===editVisit);
+  return `<h1>Kunjungan</h1><p class="sub">Catat pengunjung perpustakaan, anggota maupun tamu. Tanggal bisa diatur untuk mencatat kunjungan yang terlewat${U().role==='duta'?' (Duta hanya bisa mencatat untuk hari ini)':''}.</p>
+  <p class="note" style="margin:0 0 10px">${esc(msg)}</p>
+  <div class="stats"><div class="card stat"><b>${td}</b><span>Pengunjung hari ini</span></div><div class="card stat"><b>${bl}</b><span>Kunjungan bulan ini</span></div></div>
+  <div class="card"><h2>${ev?'Ubah kunjungan':'Catat kunjungan'}</h2><form onsubmit="addVisit(event)"><div class="row"><div><label>Nama anggota atau tamu</label><input name="n" list="dlm" value="${esc(ev?ev.n:'')}" placeholder="Ketik untuk mencari anggota…" required autocomplete="off"><datalist id="dlm">${members.map(m=>`<option value="${esc(m.nama)} (${esc(m.no)})">`).join('')}</datalist></div><div><label>Tanggal kunjungan</label><input name="tgl" type="date" value="${ev?ev.tgl:today()}" max="${today()}"${U().role==='duta'?` min="${today()}"`:''} required></div></div><div class="flex"><button class="btn">${ev?'Simpan perubahan':'Catat kunjungan'}</button>${ev?'<button type="button" class="btn s" onclick="editVisit=null;route()">Batal</button>':''}</div></form></div>
+  ${U().role==='duta'?'':`<div class="card"><h2>Laporan kunjungan</h2><p class="note" style="margin:0 0 10px">Pilih periode, lalu unduh atau cetak laporannya. Isinya ringkasan, 5 pengunjung terbanyak, jumlah per hari, dan rincian semua kunjungan.</p><div class="row"><div><label>Dari tanggal</label><input type="date" id="kf" value="${kunRange()[0]}" max="${today()}" onchange="setKun()"></div><div><label>Sampai tanggal</label><input type="date" id="kt" value="${kunRange()[1]}" max="${today()}" onchange="setKun()"></div></div><div class="flex" style="margin-bottom:12px"><button class="btn s m" onclick="kunPreset('bulan')">Bulan ini</button><button class="btn s m" onclick="kunPreset('30')">30 hari terakhir</button><button class="btn s m" onclick="kunPreset('semua')">Semua</button></div><div id="kvs" class="stats">${kunStats()}</div><div class="flex"><button class="btn" onclick="kunPdf()">Unduh PDF</button><button class="btn s" onclick="kunPrint()">Cetak laporan</button></div></div><div id="kvp" class="rptp">${kunPrintHtml()}</div>`}
+  <div class="card tw"><h2>Daftar kunjungan</h2><div class="flex" style="margin-bottom:8px"><input id="vq" placeholder="Cari nama atau tanggal (contoh: 2026-11)…" oninput="visList()" style="flex:1 1 220px;width:auto">${pgSelect()}</div><p class="note" style="margin:0 0 8px">Menampilkan ${pgSize} kunjungan terbaru yang cocok.</p>${U().role!=='duta'?`<div class="flex" style="margin-bottom:8px"><button class="btn d m" id="visTDel" disabled onclick="delSel('visT','kunjungan')">Hapus terpilih (0)</button></div>`:''}<table id="visT"><tr>${U().role!=='duta'?`<th><input type="checkbox" class="ckh" onchange="ckAll(this,'visT')" aria-label="Pilih semua"></th>`:''}<th>Nama</th><th>Tanggal</th><th></th></tr><tbody id="visB"></tbody></table></div>`;
+}
+function addVisit(e){
+  e.preventDefault();const n=e.target.n.value.trim(),t=today(),say=s=>{msg=s;route();msg=''};
+  if(!n)return;
+  if(editVisit&&U().role!=='duta'){
+    const v=visits.find(x=>x.id===editVisit);
+    if(v){const tgl=e.target.tgl.value;
+      if(tgl>t){say('Tanggal tidak boleh lebih dari hari ini.');return}
+      if(visits.some(x=>x.id!==v.id&&x.tgl===tgl&&x.n.toLowerCase()===n.toLowerCase())){say(n+' sudah tercatat pada tanggal itu.');return}
+      v.n=n;v.tgl=tgl;editVisit=null;sv();say('Kunjungan diperbarui.');return}
+  }
+  const tgl=U().role==='duta'?t:(e.target.tgl.value||t);
+  if(tgl>t){say('Tanggal kunjungan tidak boleh lebih dari hari ini.');return}
+  if(visits.some(v=>v.tgl===tgl&&v.n.toLowerCase()===n.toLowerCase())){say(n+' sudah tercatat berkunjung pada '+fmtD(tgl)+'.');return}
+  visits.push({id:'v'+Date.now(),n,tgl});sv();say('Kunjungan '+n+' pada '+fmtD(tgl)+' dicatat.');
+}
+
+/* CETAK DAFTAR BUKU */
+var bkKat='';
+function bukuData(){
+  return books.filter(b=>!bkKat||b.kategori===bkKat).slice().sort((a,b)=>String(a.kategori).localeCompare(String(b.kategori))||String(a.judul).localeCompare(String(b.judul)));
+}
+function setBkKat(v){bkKat=v;const e=$('#bkp');if(e)e.innerHTML=bukuPrintHtml()}
+function bukuPrintHtml(){
+  const L=bukuData(),tot=L.reduce((a,b)=>a+Number(b.stok),0),av=L.reduce((a,b)=>a+avail(b),0),cat={};
+  L.forEach(b=>{const c=cat[b.kategori]||(cat[b.kategori]={j:0,e:0});c.j++;c.e+=Number(b.stok)});
+  const t=(h,rows)=>`<table class="rt"><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.join('')||`<tr><td colspan="${h.length}">Tidak ada data.</td></tr>`}</table>`;
+  return `<div class="rh"><h1>${esc(libName||'Perpustakaan')}</h1><p>Daftar Koleksi Buku${bkKat?', kategori '+esc(bkKat):''}. Dicetak ${fmtD(today())}.</p></div>
+  <p><b>${L.length}</b> judul, <b>${tot}</b> eksemplar, <b>${av}</b> tersedia.</p>
+  <h2>Ringkasan per kategori</h2>${t(['Kategori','Judul','Eksemplar'],Object.entries(cat).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${v.j}</td><td>${v.e}</td></tr>`))}
+  <h2>Daftar buku</h2>${t(['No','Kode','Judul','Penulis','Kategori','Penerbit','ISBN','Tersedia / stok'],L.map((b,i)=>`<tr><td>${i+1}</td><td>${esc(b.kode)}</td><td>${esc(b.judul)}</td><td>${esc(b.penulis)}</td><td>${esc(b.kategori)}</td><td>${esc(b.penerbit)}</td><td>${esc(b.isbn)}</td><td>${avail(b)} / ${b.stok}</td></tr>`))}`;
+}
+function bukuPrint(){try{window.print()}catch(e){ask('Cetak langsung tidak tersedia di sini. Gunakan Unduh PDF, atau buka halaman ini di tab sendiri lalu tekan Ctrl+P.')}}
+async function bukuPdf(){
+  if(!window.PDFLib){ask('Pustaka PDF belum termuat. Periksa koneksi internet, lalu muat ulang halaman.');return}
+  const L=bukuData(),{PDFDocument,StandardFonts,rgb}=window.PDFLib,mm=72/25.4,PW=297*mm,PH=210*mm,ML=14*mm,CW=PW-2*ML;
+  const doc=await PDFDocument.create();
+  const F=await doc.embedFont(StandardFonts.Helvetica),FB=await doc.embedFont(StandardFonts.HelveticaBold),FS=await doc.embedFont(StandardFonts.TimesRomanBold);
+  let img=null;if(logo){try{img=await doc.embedPng(logo)}catch(e){}}
+  const ink=rgb(.114,.169,.31),gold=rgb(.949,.694,.208),tx=rgb(.086,.125,.227),mut=rgb(.357,.396,.502),tint=rgb(.89,.914,.965),white=rgb(1,1,1),zebra=rgb(.965,.972,.99);
+  const safe=t=>String(t==null?'':t).replace(/[^\x20-\x7E\xA0-\xFF]/g,'?');
+  const cut=(t,f,z,w)=>{t=safe(t);if(f.widthOfTextAtSize(t,z)<=w)return t;while(t.length>1&&f.widthOfTextAtSize(t+'...',z)>w)t=t.slice(0,-1);return t+'...'};
+  const tot=L.reduce((a,b)=>a+Number(b.stok),0),av=L.reduce((a,b)=>a+avail(b),0);
+  let page=doc.addPage([PW,PH]),y;
+  page.drawRectangle({x:0,y:PH-26*mm,width:PW,height:26*mm,color:ink});
+  page.drawRectangle({x:0,y:PH-27.4*mm,width:PW,height:1.4*mm,color:gold});
+  let lw=0;
+  if(img){const h=15*mm;lw=Math.min(img.width*h/img.height,30*mm);
+    page.drawRectangle({x:PW-ML-lw-1*mm,y:PH-21*mm,width:lw+2*mm,height:h+2*mm,color:white});
+    page.drawImage(img,{x:PW-ML-lw,y:PH-20*mm,width:lw,height:h})}
+  page.drawText(cut(libName||'Perpustakaan',FS,18,CW-lw-6*mm),{x:ML,y:PH-12*mm,size:18,font:FS,color:white});
+  page.drawText('Daftar Koleksi Buku'+(bkKat?', kategori '+bkKat:''),{x:ML,y:PH-18.5*mm,size:11,font:FB,color:white});
+  page.drawText('Dicetak '+fmtD(today()),{x:ML,y:PH-23.5*mm,size:8,font:F,color:rgb(.85,.88,.95)});
+  page.drawText(L.length+' judul, '+tot+' eksemplar, '+av+' tersedia',{x:ML,y:PH-35*mm,size:10,font:FB,color:ink});
+  y=PH-40*mm;
+  const heads=['No','Kode','Judul','Penulis','Kategori','Penerbit','ISBN','Stok'],w=[10,24,70,52,32,38,30,13],right=[0,7];
+  const head=()=>{
+    page.drawRectangle({x:ML,y:y-6*mm,width:CW,height:6*mm,color:tint});
+    let x=ML;heads.forEach((h,i)=>{const tw=FB.widthOfTextAtSize(h,8);page.drawText(h,{x:right.includes(i)?x+w[i]*mm-1.5*mm-tw:x+1.5*mm,y:y-4.2*mm,size:8,font:FB,color:ink});x+=w[i]*mm});
+    y-=6*mm};
+  head();
+  if(!L.length)page.drawText('Tidak ada data.',{x:ML+1.5*mm,y:y-4.5*mm,size:8.5,font:F,color:mut});
+  L.forEach((b,ri)=>{
+    if(y-6*mm<14*mm){page=doc.addPage([PW,PH]);y=PH-16*mm;head()}
+    if(ri%2)page.drawRectangle({x:ML,y:y-6*mm,width:CW,height:6*mm,color:zebra});
+    const cells=[String(ri+1),b.kode,b.judul,b.penulis,b.kategori,b.penerbit,b.isbn,avail(b)+'/'+b.stok];
+    let x=ML;cells.forEach((c,i)=>{const t=cut(c,F,8.5,w[i]*mm-3*mm),tw=F.widthOfTextAtSize(t,8.5);
+      page.drawText(t,{x:right.includes(i)?x+w[i]*mm-1.5*mm-tw:x+1.5*mm,y:y-4.2*mm,size:8.5,font:F,color:tx});x+=w[i]*mm});
+    y-=6*mm});
+  const pages=doc.getPages();
+  pages.forEach((p,i)=>{
+    p.drawText(cut(libName||'Perpustakaan',F,7.5,CW/2),{x:ML,y:7*mm,size:7.5,font:F,color:mut});
+    const t='Halaman '+(i+1)+' dari '+pages.length;
+    p.drawText(t,{x:PW-ML-F.widthOfTextAtSize(t,7.5),y:7*mm,size:7.5,font:F,color:mut});
+  });
+  const slug=bkKat?'-'+bkKat.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'';
+  await savePdf(await doc.save(),'daftar-buku'+slug+'.pdf');
+}
+
+/* BUKU CONTOH */
+const seedLeft=()=>books.filter(b=>/^b[1-8]$/.test(b.id));
+function seedNote(){
+  const n=seedLeft().length;
+  return n?`<div class="card" style="border-left:4px solid var(--acc)"><p style="margin:0 0 10px">Masih ada <b>${n} buku contoh bawaan</b> yang ikut tampil di dashboard dan katalog. Hapus jika perpustakaan hanya ingin menampilkan data buku sendiri.</p><button class="btn d m" onclick="delSeed()">Hapus buku contoh</button></div>`:'';
+}
+function delSeed(){
+  const busy=busyBooks(),ids=seedLeft().map(b=>b.id),ok=ids.filter(i=>!busy.has(i));
+  ask('Hapus '+ok.length+' buku contoh bawaan'+(ids.length>ok.length?' ('+(ids.length-ok.length)+' dilewati karena masih dipinjam)':'')+'? Buku yang Anda tambahkan sendiri tidak ikut terhapus.',()=>{
+    books=books.filter(b=>!ok.includes(b.id));sv();bmsg='Buku contoh dihapus. Dashboard dan katalog kini hanya memuat data buku Anda.';route();bmsg='';
+  });
+}
+
+/* KELOLA DENDA */
+var dnStatus='';
+const bTitle=l=>bk(l.bookId)?bk(l.bookId).judul:'(buku sudah dihapus)';
+const paidInfo=l=>{
+  const f=fineOf(l);
+  if(!l.tglKembali||f<=0||l.lunas===false)return{paid:false,amount:0,date:''};
+  return{paid:true,amount:l.dibayar!=null?l.dibayar:f,date:l.tglBayar||l.tglKembali};
+};
+const unpaidTotal=()=>loans.filter(l=>l.tglKembali&&fineOf(l)>0&&l.lunas===false).reduce((a,l)=>a+fineOf(l),0);
+const dStat=l=>!l.tglKembali?'Berjalan':(paidInfo(l).paid?'Lunas':'Belum bayar');
+/* KAS PERPUSTAKAAN */
+var kasTx=load('lib_kas',[]),editKas=null;
+function kasLedger(){
+  const rows=[];
+  loans.forEach(l=>{const pi=paidInfo(l);if(pi.paid)rows.push({id:'d'+l.id,tgl:pi.date,ket:l.ketKas||('Denda keterlambatan '+bTitle(l)),jenis:'masuk',jml:pi.amount,src:'denda'})});
+  kasTx.forEach(k=>rows.push({id:k.id,tgl:k.tgl,ket:k.ket,jenis:k.jenis,jml:k.jml,src:'manual'}));
+  rows.sort((a,b)=>a.tgl.localeCompare(b.tgl)||a.id.localeCompare(b.id));
+  let s=0;rows.forEach(r=>{s+=r.jenis==='masuk'?r.jml:-r.jml;r.saldo=s});
+  return rows;
+}
+function bulan(m){
+  const r=bulan0(m),sum=j=>kasTx.filter(k=>k.jenis===j&&k.tgl.startsWith(m)).reduce((a,k)=>a+k.jml,0);
+  r.masukLain=sum('masuk');r.keluar=sum('keluar');r.masukKas=r.kas+r.masukLain;
+  const L=kasLedger().filter(x=>x.tgl.slice(0,7)<=m);r.saldo=L.length?L[L.length-1].saldo:0;
+  return r;
+}
+function vDenda(){
+  const all=loans.filter(l=>fineOf(l)>0),ret=all.filter(l=>l.tglKembali);
+  const paid=ret.filter(l=>paidInfo(l).paid),unp=ret.filter(l=>!paidInfo(l).paid),run=all.filter(l=>!l.tglKembali);
+  const sum=a=>a.reduce((x,l)=>x+fineOf(l),0),cashDenda=paid.reduce((x,l)=>x+paidInfo(l).amount,0);
+  const rows=all.filter(l=>!dnStatus||dStat(l)===dnStatus).sort((a,b)=>(b.tglKembali||today()).localeCompare(a.tglKembali||today()));
+  const canRev=['admin','kepala'].includes(U().role);
+  const led=kasLedger(),inc=led.filter(r=>r.jenis==='masuk').reduce((a,r)=>a+r.jml,0),out=led.filter(r=>r.jenis==='keluar').reduce((a,r)=>a+r.jml,0),saldo=inc-out;
+  const byM={};led.forEach(r=>{const m=r.tgl.slice(0,7),x=byM[m]||(byM[m]={i:0,o:0});if(r.jenis==='masuk')x.i+=r.jml;else x.o+=r.jml});
+  const ms=Object.keys(byM).sort().reverse(),ek=editKas?kasTx.find(k=>k.id===editKas):null;
+  const st=(n,t,c)=>`<div class="card stat"><b${c?' style="color:var(--bad)"':''}>${n}</b><span>${t}</span></div>`;
+  const opt=v=>`<option value="${v}" ${dnStatus===v?'selected':''}>${v||'Semua status'}</option>`;
+  const jn=ek?ek.jenis:'keluar';
+  return `<h1>Kelola Denda</h1><p class="sub">Catat pembayaran denda keterlambatan (${rp(fineRate)} per hari) serta pemasukan dan pengeluaran kas perpustakaan.</p>
+  <p class="note" style="margin:0 0 10px">${esc(msg)}</p>
+  <div class="stats">${st(rp(sum(ret)),'Denda tercatat')}${st(rp(cashDenda),'Denda sudah dibayar')}${st(rp(sum(unp)),'Denda belum dibayar',sum(unp)>0)}${st(rp(sum(run)),'Denda berjalan')}</div>
+  <div class="card"><h2>Kas perpustakaan</h2>
+    <div class="flex" style="align-items:baseline;gap:14px;margin-bottom:6px"><b style="font:700 34px var(--serif);color:${saldo<0?'var(--bad)':'var(--pri)'}">${rp(saldo)}</b><span class="note" style="margin:0">saldo kas saat ini</span></div>
+    <div class="stats" style="margin:10px 0">${st(rp(inc),'Total pemasukan')}${st(rp(out),'Total pengeluaran')}${st(rp(inc-cashDenda),'Pemasukan lain (bukan denda)')}</div>
+    <p class="note" style="margin:0 0 12px">Keterangan: saldo kas adalah total pemasukan (denda yang sudah dibayar ${rp(cashDenda)} dan pemasukan lain ${rp(inc-cashDenda)}) dikurangi pengeluaran ${rp(out)}. Belum termasuk ${unp.length} denda belum dibayar senilai ${rp(sum(unp))} dan denda berjalan ${rp(sum(run))}.</p>
+    <div class="tw"><table><tr><th>Bulan</th><th>Pemasukan</th><th>Pengeluaran</th><th>Selisih</th></tr>${ms.map(m=>`<tr><td>${bln(m)}</td><td>${rp(byM[m].i)}</td><td>${rp(byM[m].o)}</td><td><b class="${byM[m].i-byM[m].o<0?'late':''}">${rp(byM[m].i-byM[m].o)}</b></td></tr>`).join('')||'<tr><td colspan="4">Belum ada transaksi kas.</td></tr>'}</table></div></div>
+  <div class="card"${ek?' style="border:2px solid var(--acc)"':''}><h2>${ek?'Ubah transaksi kas':'Catat transaksi kas'}</h2>
+    <p class="note" style="margin:0 0 10px">Pembayaran denda masuk ke kas secara otomatis. Pakai form ini untuk pemasukan lain atau pengeluaran, misalnya membeli buku baru atau alat tulis.</p>
+    <form onsubmit="saveKas(event)"><div class="row"><div><label>Jenis</label><select name="jenis"><option value="keluar" ${jn==='keluar'?'selected':''}>Pengeluaran</option><option value="masuk" ${jn==='masuk'?'selected':''}>Pemasukan lain</option></select></div><div><label>Tanggal</label><input type="date" name="tgl" value="${ek?ek.tgl:today()}" max="${today()}" required></div><div><label>Jumlah (Rp)</label><input name="jml" type="number" min="1" step="1" value="${ek?ek.jml:''}" required></div><div><label>Keterangan</label><input name="ket" maxlength="120" value="${esc(ek?ek.ket:'')}" placeholder="Contoh: Beli buku baru" required></div></div>
+    <div class="flex"><button class="btn">${ek?'Simpan perubahan':'Simpan transaksi'}</button>${ek?'<button type="button" class="btn s" onclick="editKas=null;route()">Batal</button>':''}</div></form></div>
+  <div class="card tw"><h2>Daftar denda (${rows.length})</h2>
+    <div class="flex" style="margin-bottom:8px"><select style="width:auto" onchange="dnStatus=this.value;route()" aria-label="Status denda">${['','Belum bayar','Lunas','Berjalan'].map(opt).join('')}</select><input placeholder="Cari nama peminjam atau judul buku…" oninput="filterRows(this,'dnT')" style="flex:1 1 200px;width:auto">${pgSelect()}</div>
+    <div class="flex" style="margin-bottom:8px"><button class="btn m" id="dnTDel" data-lbl="Tandai lunas terpilih" disabled onclick="paySel()">Tandai lunas terpilih (0)</button></div>
+    <table id="dnT"><tr><th><input type="checkbox" class="ckh" onchange="ckAll(this,'dnT')" aria-label="Pilih semua"></th><th></th><th>Peminjam</th><th>Buku</th><th>Dikembalikan</th><th>Terlambat</th><th>Denda</th><th>Status</th><th>Tgl bayar</th></tr>${rows.map(l=>{const pi=paidInfo(l),s=dStat(l),can=l.tglKembali&&!pi.paid;
+      return `<tr><td>${can?`<input type="checkbox" class="ck" value="${l.id}" onchange="ckUpd('dnT')" aria-label="Pilih denda">`:''}</td><td>${can?`<button class="btn m" onclick="askPay(['${l.id}'])">Tandai lunas</button>`:(pi.paid&&canRev?`<button class="btn d m" onclick="batalBayar('${l.id}')">Batalkan</button>`:'')}</td><td>${esc(l.peminjam)}</td><td>${esc(bTitle(l))}</td><td>${l.tglKembali?fmtD(l.tglKembali):'Belum kembali'}</td><td>${lateDays(l)} hari</td><td><b>${rp(fineOf(l))}</b></td><td><span class="tag ${s==='Lunas'?'':'no'}">${s}</span></td><td>${pi.paid?fmtD(pi.date):'-'}</td></tr>`}).join('')||'<tr><td colspan="9">Belum ada denda.</td></tr>'}</table></div>
+  <div class="card tw"><h2>Buku kas</h2><p class="note" style="margin:0 0 8px">Semua pemasukan dan pengeluaran kas, terbaru di atas. Saldo dihitung berurutan menurut tanggal.</p>
+    <div class="flex" style="margin-bottom:8px"><input placeholder="Cari keterangan…" oninput="filterRows(this,'kasT')" style="flex:1 1 200px;width:auto">${pgSelect()}</div>
+    <table id="kasT"><tr><th></th><th>Tanggal</th><th>Keterangan</th><th>Sumber</th><th>Pemasukan</th><th>Pengeluaran</th><th>Saldo</th></tr>${led.slice().reverse().map(r=>`<tr><td>${r.src==='manual'&&canRev?`<button class="btn s m" onclick="editKas='${r.id}';route();scrollTo(0,0)">Ubah</button> <button class="btn d m" onclick="delKas('${r.id}')">Hapus</button>`:''}</td><td>${fmtD(r.tgl)}</td><td>${esc(r.ket)}</td><td>${r.src==='denda'?'Denda':'Manual'}</td><td>${r.jenis==='masuk'?'<b>'+rp(r.jml)+'</b>':'-'}</td><td class="${r.jenis==='keluar'?'late':''}">${r.jenis==='keluar'?rp(r.jml):'-'}</td><td>${rp(r.saldo)}</td></tr>`).join('')||'<tr><td colspan="7">Belum ada transaksi kas.</td></tr>'}</table></div>`;
+}
+function saveKas(e){
+  e.preventDefault();const f=e.target,say=t=>{msg=t;route();msg=''},role=(U()||{}).role;
+  if(!['admin','kepala','staf'].includes(role))return;
+  const jenis=f.jenis.value==='masuk'?'masuk':'keluar',tgl=f.tgl.value,jml=parseInt(f.jml.value,10),ket=f.ket.value.trim();
+  if(!(jml>0)||!ket||!tgl)return;
+  if(tgl>today()){say('Tanggal tidak boleh lebih dari hari ini.');return}
+  const cur=editKas?kasTx.find(k=>k.id===editKas):null;
+  if(editKas&&(!cur||!['admin','kepala'].includes(role))){editKas=null;route();return}
+  const saldo=kasLedger().filter(r=>!(cur&&r.id===cur.id)).reduce((a,r)=>a+(r.jenis==='masuk'?r.jml:-r.jml),0);
+  if(saldo+(jenis==='masuk'?jml:-jml)<0){ask('Pengeluaran '+rp(jml)+' melebihi saldo kas '+rp(saldo)+'. Saldo kas tidak boleh minus.');return}
+  if(cur){Object.assign(cur,{jenis,tgl,jml,ket});editKas=null;sv();say('Transaksi kas diperbarui.')}
+  else{kasTx.push({id:'k'+Date.now(),jenis,tgl,jml,ket,oleh:U().nama});sv();say((jenis==='masuk'?'Pemasukan ':'Pengeluaran ')+rp(jml)+' dicatat di buku kas.')}
+}
+function delKas(id){
+  const k=kasTx.find(x=>x.id===id);if(!k||!['admin','kepala'].includes((U()||{}).role))return;
+  const sisa=kasLedger().filter(r=>r.id!==id).reduce((a,r)=>a+(r.jenis==='masuk'?r.jml:-r.jml),0);
+  if(sisa<0){ask('Transaksi ini tidak bisa dihapus karena saldo kas akan menjadi minus. Hapus atau ubah pengeluaran yang terkait lebih dulu.');return}
+  ask('Hapus transaksi kas "'+k.ket+'" sebesar '+rp(k.jml)+'?',()=>{kasTx=kasTx.filter(x=>x.id!==id);if(editKas===id)editKas=null;sv();msg='Transaksi kas dihapus.';route();msg=''});
+}
+function paySel(){askPay([...document.querySelectorAll('#dnT .ck:checked')].map(c=>c.value))}
+function askPay(ids){
+  const L=ids.map(i=>loans.find(l=>l.id===i)).filter(l=>l&&l.tglKembali&&fineOf(l)>0&&!paidInfo(l).paid);
+  if(!L.length)return;
+  const tot=L.reduce((a,l)=>a+fineOf(l),0),def=L.length===1?'Denda keterlambatan '+bTitle(L[0]):'Denda keterlambatan ('+L.length+' transaksi)';
+  const o=document.createElement('div');o.className='ov';
+  o.innerHTML=`<div class="dlg"><h2 style="margin:0 0 8px">Terima pembayaran denda</h2><p style="margin:0 0 10px">${L.length} transaksi, total <b>${rp(tot)}</b>. Pembayaran dicatat sebagai pemasukan kas perpustakaan.</p><label>Keterangan kas</label><input id="pk" value="${esc(def)}" maxlength="120" style="margin-bottom:14px"><div class="flex" style="justify-content:flex-end"><button class="btn s" id="no">Batal</button><button class="btn" id="yes">Simpan pembayaran</button></div></div>`;
+  document.body.appendChild(o);
+  o.querySelector('#no').onclick=()=>o.remove();
+  o.querySelector('#yes').onclick=()=>{
+    const ket=o.querySelector('#pk').value.trim()||def;o.remove();
+    L.forEach(l=>{l.lunas=true;l.dibayar=fineOf(l);l.tglBayar=today();l.ketKas=L.length===1?ket:ket+': '+bTitle(l)});
+    sv();msg='Pembayaran '+rp(tot)+' dicatat dan masuk kas perpustakaan.';route();msg='';
+  };
+}
+function batalBayar(id){
+  const l=loans.find(x=>x.id===id);if(!l||!['admin','kepala'].includes((U()||{}).role))return;
+  const sisa=kasLedger().filter(r=>r.id!=='d'+id).reduce((a,r)=>a+(r.jenis==='masuk'?r.jml:-r.jml),0);
+  if(sisa<0){ask('Pembayaran ini tidak bisa dibatalkan karena saldo kas akan menjadi minus. Hapus atau ubah pengeluaran kas yang terkait lebih dulu.');return}
+  ask('Batalkan pembayaran denda '+rp(fineOf(l))+' atas nama '+l.peminjam+'? Jumlah itu dikurangi dari kas dan denda kembali berstatus belum bayar.',()=>{
+    l.lunas=false;delete l.dibayar;delete l.tglBayar;delete l.ketKas;sv();msg='Pembayaran dibatalkan.';route();msg='';
+  },'Ya, batalkan');
+}
+
+/* RESERVASI */
+var resv=load('lib_resv',[]),resDays=(v=>Number.isFinite(v)&&v>=1?Math.floor(v):2)(Number(load('lib_resdays',2))),RES_MAX=3,rsStatus='';
+const resLive=r=>r.status==='Menunggu'&&r.batas>=today();
+const resStat=r=>r.status==='Menunggu'&&r.batas<today()?'Kedaluwarsa':r.status;
+const maskName=n=>String(n).split(' ').map(w=>w?w[0]+'*'.repeat(Math.max(0,w.length-1)):'').join(' ');
+const findMember=no=>members.find(m=>m.no.toLowerCase()===String(no).trim().toLowerCase());
+const memLabel=m=>m.nama+' ('+m.no+')';
+const busyBooks=()=>new Set([...loans.filter(l=>!l.tglKembali).map(l=>l.bookId),...resv.filter(resLive).map(r=>r.bookId)]);
+function vReservasi(){
+  const cnt=s=>resv.filter(r=>resStat(r)===s).length,st=(n,t,c)=>`<div class="card stat"><b${c?' style="color:var(--bad)"':''}>${n}</b><span>${t}</span></div>`;
+  const rows=resv.filter(r=>!rsStatus||resStat(r)===rsStatus).sort((a,b)=>b.tgl.localeCompare(a.tgl)||b.kode.localeCompare(a.kode));
+  const opt=v=>`<option value="${v}" ${rsStatus===v?'selected':''}>${v||'Semua status'}</option>`;
+  return `<h1>Reservasi</h1><p class="sub">Reservasi buku dari anggota lewat katalog. Buku ditahan ${resDays} hari. Proses menjadi peminjaman saat anggota datang mengambil.</p>
+  <p class="note" style="margin:0 0 10px">${esc(msg)}</p>
+  <div class="stats">${st(cnt('Menunggu'),'Menunggu diambil')}${st(cnt('Kedaluwarsa'),'Kedaluwarsa',cnt('Kedaluwarsa')>0)}${st(cnt('Dipinjam'),'Sudah dipinjam')}${st(cnt('Dibatalkan'),'Dibatalkan')}</div>
+  <div class="card tw"><h2>Daftar reservasi (${rows.length})</h2>
+    <div class="flex" style="margin-bottom:8px"><select style="width:auto" onchange="rsStatus=this.value;route()" aria-label="Status reservasi">${['','Menunggu','Kedaluwarsa','Dipinjam','Dibatalkan'].map(opt).join('')}</select><input placeholder="Cari kode, nama, nomor anggota, atau buku…" oninput="filterRows(this,'rsT')" style="flex:1 1 200px;width:auto">${pgSelect()}</div>
+    <table id="rsT"><tr><th></th><th>Kode</th><th>Tanggal</th><th>Anggota</th><th>Buku</th><th>Ambil sebelum</th><th>Status</th></tr>${rows.map(r=>{const s=resStat(r),act=s==='Menunggu'||s==='Kedaluwarsa';
+      return `<tr><td>${act?`<button class="btn m" onclick="resProc('${r.id}')">Proses pinjam</button> <button class="btn d m" onclick="resBatal('${r.id}')">Batalkan</button>`:''}</td><td><b>${esc(r.kode)}</b></td><td>${fmtD(r.tgl)}</td><td>${esc(r.nama)} (${esc(r.no)})</td><td>${esc(bk(r.bookId)?bk(r.bookId).judul:'(buku sudah dihapus)')}</td><td>${fmtD(r.batas)}</td><td><span class="tag ${s==='Dipinjam'||s==='Menunggu'?'':'no'}">${s}</span></td></tr>`}).join('')||'<tr><td colspan="7">Belum ada reservasi.</td></tr>'}</table></div>`;
+}
+function resProc(id){
+  const r=resv.find(x=>x.id===id);if(!r||r.status!=='Menunggu')return;
+  const b=bk(r.bookId);if(!b){ask('Buku untuk reservasi ini sudah tidak ada di katalog.');return}
+  if(resStat(r)==='Kedaluwarsa'&&avail(b)<=0){ask('Reservasi ini sudah kedaluwarsa dan buku kini tidak tersedia.');return}
+  const o=document.createElement('div');o.className='ov';
+  o.innerHTML=`<div class="dlg"><h2 style="margin:0 0 8px">Proses menjadi peminjaman</h2><p style="margin:0 0 10px"><b>${esc(b.judul)}</b><br>${esc(r.nama)} (${esc(r.no)})</p><label>Lama pinjam (hari)</label><input id="lp" type="number" min="1" max="60" value="7" style="margin-bottom:14px"><div class="flex" style="justify-content:flex-end"><button class="btn s" id="no">Batal</button><button class="btn" id="yes">Catat peminjaman</button></div></div>`;
+  document.body.appendChild(o);o.querySelector('#no').onclick=()=>o.remove();
+  o.querySelector('#yes').onclick=()=>{
+    const d=Math.max(1,Math.min(60,parseInt(o.querySelector('#lp').value,10)||7));o.remove();
+    r.status='Dipinjam';r.tglProses=today();
+    loans.push({id:'l'+Date.now(),bookId:b.id,peminjam:r.nama+' ('+r.no+')',tglPinjam:today(),jatuhTempo:addDays(today(),d),tglKembali:''});
+    sv();msg='Reservasi '+r.kode+' diproses. Peminjaman dicatat selama '+d+' hari.';route();msg='';
+  };
+}
+function resBatal(id){
+  const r=resv.find(x=>x.id===id);if(!r||r.status!=='Menunggu')return;
+  ask('Batalkan reservasi '+r.kode+' atas nama '+r.nama+'?',()=>{r.status='Dibatalkan';r.tglProses=today();sv();msg='Reservasi '+r.kode+' dibatalkan.';route();msg=''},'Ya, batalkan');
+}
+function resCard(){
+  return `<div class="card"><h2>Reservasi buku</h2><p class="sub" style="margin-bottom:10px">Lama buku ditahan untuk anggota yang mereservasi lewat katalog. Setiap anggota dapat memiliki maksimal ${RES_MAX} reservasi aktif.</p><form onsubmit="setResDays(event)"><div class="row"><div><label>Masa tahan (hari)</label><input name="rd" type="number" min="1" max="14" step="1" value="${resDays}" required></div></div><button class="btn">Simpan</button></form></div>`;
+}
+function setResDays(e){
+  e.preventDefault();if(!['admin','kepala'].includes((U()||{}).role))return;
+  const v=parseInt(e.target.rd.value,10);if(!(v>=1&&v<=14))return;
+  resDays=v;save('lib_resdays',v);msg='Masa tahan reservasi disimpan: '+v+' hari. Berlaku untuk reservasi berikutnya.';route();msg='';
+}
+
+/* TARIF DENDA */
+function fineCard(){
+  return `<div class="card"><h2>Denda keterlambatan</h2><p class="sub" style="margin-bottom:10px">Denda dihitung per hari keterlambatan sejak jatuh tempo. Perubahan tarif hanya berlaku untuk pengembalian berikutnya.</p><form onsubmit="setFine(event)"><div class="row"><div><label>Denda per hari (Rp)</label><input name="fr" type="number" min="0" max="1000000" step="100" value="${fineRate}" required></div></div><button class="btn">Simpan tarif</button></form></div>`;
+}
+function setFine(e){
+  e.preventDefault();if(!['admin','kepala'].includes((U()||{}).role))return;
+  const v=parseInt(e.target.fr.value,10);if(!(v>=0))return;
+  fineRate=v;save('lib_fine',v);msg='Tarif denda disimpan: '+rp(v)+' per hari.';route();msg='';
+}
+
+/* CADANGAN DATA */
+function dataObj(){return{versi:1,dibuat:today(),pengaturan:{libName,dashName,logo,fineRate,resDays},buku:books,pinjam:loans,anggota:members,kunjungan:visits,kas:kasTx,reservasi:resv}}
+function backupCard(){
+  return `<div class="card"><h2>Cadangan data</h2><p class="sub" style="margin-bottom:10px">Unduh seluruh data (buku, anggota, peminjaman, kunjungan, kas, reservasi, dan pengaturan) sebagai berkas JSON. Berkas ini juga bisa diimpor ke versi online.</p><div class="flex"><button class="btn" onclick="exportData()">Unduh cadangan (JSON)</button>${U().role==='admin'?'<label class="btn s" style="margin:0;cursor:pointer">Impor dari berkas<input type="file" accept="application/json,.json" style="display:none" onchange="importData(this)"></label>':''}</div></div>`;
+}
+async function exportData(){await saveBytes(new TextEncoder().encode(JSON.stringify(dataObj())),'cadangan-perpustakaan-'+today()+'.json','application/json')}
+function importData(inp){
+  const f=inp.files&&inp.files[0];if(!f||U().role!=='admin')return;
+  const r=new FileReader();
+  r.onload=()=>{
+    let d;try{d=JSON.parse(r.result)}catch(e){ask('Berkas tidak bisa dibaca. Pastikan ini berkas cadangan JSON dari aplikasi ini.');return}
+    const L=['buku','pinjam','anggota','kunjungan','kas','reservasi'];
+    if(!d||typeof d!=='object'||!L.some(k=>Array.isArray(d[k]))){ask('Isi berkas tidak sesuai format cadangan perpustakaan.');return}
+    const n=k=>Array.isArray(d[k])?d[k].filter(o=>o&&o.id).length:0;
+    ask('Impor '+n('buku')+' buku, '+n('anggota')+' anggota, '+n('pinjam')+' peminjaman, '+n('kunjungan')+' kunjungan, '+n('kas')+' transaksi kas, dan '+n('reservasi')+' reservasi? Data dengan ID yang sama akan ditimpa.',()=>{
+      const merge=(cur,inc)=>{const m=new Map(cur.map(o=>[o.id,o]));(Array.isArray(inc)?inc:[]).forEach(o=>{if(o&&o.id)m.set(o.id,o)});return[...m.values()]};
+      books=merge(books,d.buku);loans=merge(loans,d.pinjam);members=merge(members,d.anggota);visits=merge(visits,d.kunjungan);kasTx=merge(kasTx,d.kas);resv=merge(resv,d.reservasi);
+      books.forEach(b=>{if(b.penerbit==null)b.penerbit='';if(b.kode==null)b.kode=b.rak||''});
+      const p=d.pengaturan||{};
+      if(typeof p.libName==='string'&&p.libName){libName=p.libName;save('lib_name',libName)}
+      if(typeof p.dashName==='string'&&p.dashName){dashName=p.dashName;save('lib_dash',dashName)}
+      if(typeof p.logo==='string'){logo=p.logo;save('lib_logo',logo)}
+      if(Number.isFinite(Number(p.fineRate))&&p.fineRate!==null){fineRate=Number(p.fineRate);save('lib_fine',fineRate)}
+      if(Number.isFinite(Number(p.resDays))&&Number(p.resDays)>=1){resDays=Number(p.resDays);save('lib_resdays',resDays)}
+      sv();msg='Data berhasil diimpor.';route();msg='';
+    },'Ya, impor');
+    inp.value='';
+  };
+  r.readAsText(f);
+}
+
+/* NAMA TAMPILAN */
+function nameCard(){
+  return `<div class="card"><h2>Nama tampilan</h2><p class="sub" style="margin-bottom:10px">Nama perpustakaan tampil di bagian atas halaman dan kartu anggota. Judul dashboard tampil di menu dan di halaman dashboard.</p><form onsubmit="setNames(event)"><div class="row"><div><label>Nama perpustakaan</label><input name="ln" value="${esc(libName)}" maxlength="40" required></div><div><label>Judul dashboard</label><input name="dn" value="${esc(dashName)}" maxlength="24" required></div></div><div class="flex"><button class="btn">Simpan nama</button><button type="button" class="btn s" onclick="resetNames()">Kembalikan ke awal</button></div></form></div>`;
+}
+function setNames(e){
+  e.preventDefault();if(!['admin','kepala'].includes((U()||{}).role))return;
+  const f=e.target;libName=f.ln.value.trim()||'Perpustakaan';dashName=f.dn.value.trim()||'Dashboard';
+  save('lib_name',libName);save('lib_dash',dashName);msg='Nama tampilan tersimpan.';route();msg='';
+}
+function resetNames(){
+  if(!['admin','kepala'].includes((U()||{}).role))return;
+  libName='Perpustakaan';dashName='Dashboard';save('lib_name',libName);save('lib_dash',dashName);msg='Nama tampilan dikembalikan ke awal.';route();msg='';
+}
+
+/* LOGO */
+function setLogo(inp){
+  const f=inp.files[0];if(!f)return;
+  const say=t=>{msg=t;route();msg=''};
+  if(!/^image\/(png|jpeg|webp)$/.test(f.type)){say('File harus berupa gambar PNG, JPG, atau WEBP.');return}
+  const r=new FileReader();
+  r.onload=()=>{const im=new Image();
+    im.onload=()=>{const s=Math.min(1,320/Math.max(im.width,im.height)),c=document.createElement('canvas');
+      c.width=Math.max(1,Math.round(im.width*s));c.height=Math.max(1,Math.round(im.height*s));
+      c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+      logo=c.toDataURL('image/png');save('lib_logo',logo);say('Logo tersimpan.')};
+    im.onerror=()=>say('Gambar tidak dapat dibaca.');im.src=r.result};
+  r.readAsDataURL(f);
+}
+function delLogo(){logo='';save('lib_logo','');route()}
+
+/* PENGATURAN (kepala) */
+function vSet(){
+  const blk=(k,t)=>`<div class="card"><h2>${t}</h2><form onsubmit="setCred(event,'${k}')"><div class="row"><div><label>Kata sandi baru</label><input name="pw" type="password" required></div></div><button class="btn">Simpan</button></form></div>`;
+  return `<h1>Pengaturan</h1><p class="sub">Atur nama tampilan, logo, dan kata sandi.</p><p class="note" style="margin:0 0 10px">${esc(msg)}</p>${!['admin','kepala'].includes(U().role)?'':nameCard()}${!['admin','kepala'].includes(U().role)?'':fineCard()}${!['admin','kepala'].includes(U().role)?'':resCard()}${!['admin','kepala'].includes(U().role)?'':backupCard()}${!['admin','kepala'].includes(U().role)?'':`<div class="card"><h2>Logo perpustakaan</h2><p class="sub" style="margin-bottom:10px">Logo tampil di bagian atas semua halaman dan di halaman awal katalog. Gunakan gambar PNG, JPG, atau WEBP.</p>${logo?`<div style="margin-bottom:10px"><img src="${logo}" alt="Logo saat ini" style="max-height:90px;max-width:100%"></div>`:''}<div class="flex"><input type="file" accept="image/png,image/jpeg,image/webp" onchange="setLogo(this)">${logo?'<button class="btn d m" onclick="delLogo()">Hapus logo</button>':''}</div></div>`}${blk(me,'Akun Saya')}`;
+}
+boot();
+</script>
+</body>
+</html>
