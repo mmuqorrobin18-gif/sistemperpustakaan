@@ -160,32 +160,27 @@ tr:hover td{background:var(--bg)}
   .rt tr{break-inside:avoid}
   .kh,.kb .mark,.rt th,.rh{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
-.syncst{font-size:12px;opacity:.8}
-.syncst.bad{color:#ffb4ab;opacity:1}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
 <header><div class="bar"><div class="brand" id="brand"></div><div class="navw"><button class="nb" id="nl" aria-label="Geser menu ke kiri">‹</button><nav id="nav"></nav><button class="nb" id="nr" aria-label="Geser menu ke kanan">›</button></div><div class="who" id="who"></div></div></header>
 <main id="app"></main>
-<script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script>
-const LOCALK=['lib_pg'];
-const load=(k,d)=>{if(!LOCALK.includes(k))return d;try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
-const REMOTEK=['lib_name','lib_dash','lib_logo','lib_fine','lib_resdays'];
-const save=(k,v)=>{if(REMOTEK.includes(k)){setRemote(k,v);return}if(LOCALK.includes(k)){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const load=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const DAY=864e5,today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')},addDays=(d,n)=>new Date(new Date(d).getTime()+n*DAY).toISOString().slice(0,10);
-const seed=[];
-const defUsers={};
+const seed=[['Laskar Pelangi','Andrea Hirata','Novel',2005,'9789793062792',3,'A1'],['Bumi Manusia','Pramoedya Ananta Toer','Novel',1980,'9789799731234',2,'A2'],['Atomic Habits','James Clear','Pengembangan Diri',2018,'9780735211292',2,'B1'],['Sapiens','Yuval Noah Harari','Sejarah',2011,'9780062316097',2,'C1'],['Matematika Kelas X','Kemendikbud','Pelajaran',2021,'9786022823001',5,'D1'],['Biologi Kelas XI','Kemendikbud','Pelajaran',2021,'9786022823002',4,'D2'],['Filosofi Teras','Henry Manampiring','Pengembangan Diri',2018,'9786024241031',3,'B2'],['Negeri 5 Menara','Ahmad Fuadi','Novel',2009,'9789792248074',2,'A3']].map((r,i)=>({id:'b'+(i+1),judul:r[0],penulis:r[1],kategori:r[2],penerbit:['Bentang Pustaka','Lentera Dipantara','Gramedia','KPG','Kemendikbud','Kemendikbud','Kompas','Bentang Pustaka'][i],isbn:r[4],stok:r[5],kode:'BK-'+String(i+1).padStart(3,'0')}));
+const defUsers={admin:{role:'admin',nama:'Admin',pw:'admin123',kode:'ADM-2026'},kepala:{role:'kepala',nama:'Kepala Perpustakaan',pw:'kepala123',kode:'KPL-2026'}};
 let libName=load('lib_name','Perpustakaan'),dashName=load('lib_dash','Dashboard'),logo=load('lib_logo',''),visits=load('lib_visits',[]),books=load('lib_books',seed),loans=load('lib_loans',[]),members=load('lib_members',[]),users=load('lib_users',defUsers),me=null,q='',kat='',editId=null,editUser=null,editVisit=null,rMonth='',rAll=false,msg='';
-books.forEach(b=>{if(b.penerbit==null)b.penerbit='';if(b.kode==null)b.kode=b.rak||''});
+books.forEach(b=>{if(b.penerbit==null)b.penerbit='';if(b.kode==null)b.kode=b.rak||''});try{me=sessionStorage.getItem('lib_me')}catch(e){}
 const U=()=>me&&users[me];
 const ROLE={admin:'Admin',kepala:'Kepala Perpustakaan',staf:'Staf Perpustakaan',duta:'Duta Perpustakaan'},NAMA={dashboard:'Dashboard',buku:'Kelola Buku',anggota:'Anggota',kartu:'Kartu Anggota',pinjam:'Peminjaman',reservasi:'Reservasi',kunjungan:'Kunjungan',denda:'Kelola Denda',laporan:'Laporan',pengurus:'Kelola Pengurus',pengaturan:'Pengaturan'},ACCESS={admin:['dashboard','buku','anggota','kartu','pinjam','reservasi','kunjungan','denda','laporan','pengurus','pengaturan'],kepala:['dashboard','buku','anggota','kartu','pinjam','reservasi','kunjungan','denda','laporan','pengaturan'],staf:['dashboard','buku','anggota','kartu','pinjam','reservasi','kunjungan','denda','pengaturan'],duta:['dashboard','pinjam','reservasi','kunjungan','pengaturan']};
-const avail=b=>isStaff()?(b.stok-loans.filter(l=>l.bookId===b.id&&!l.tglKembali).length-resv.filter(r=>r.bookId===b.id&&resLive(r)).length):(b.stok-(pubHeld[b.id]||0));
+const avail=b=>b.stok-loans.filter(l=>l.bookId===b.id&&!l.tglKembali).length-resv.filter(r=>r.bookId===b.id&&resLive(r)).length;
 const bk=id=>books.find(b=>b.id===id);
-const sv=()=>syncSoon();
+const sv=()=>{save('lib_books',books);save('lib_loans',loans);save('lib_members',members);save('lib_resv',resv);save('lib_visits',visits);save('lib_kas',kasTx);save('lib_users',users)};
 const $=s=>document.querySelector(s);
 
 function route(){
@@ -196,7 +191,7 @@ function route(){
   const items=[['katalog','Katalog']];
   if(u){(ACCESS[u.role]||['dashboard']).forEach(k=>items.push([k,k==='dashboard'?esc(dashName||'Dashboard'):NAMA[k]]))}
   else items.push(['masuk','Masuk Staf']);
-  $('#brand').innerHTML=(logo?`<img src="${logo}" alt="Logo">`:'<i class="mark"></i>')+'<span>'+esc(libName||'Perpustakaan')+'</span>';document.title=libName||'Perpustakaan';document.body.dataset.pg=h;$('#nav').innerHTML=items.map(i=>`<a href="#${i[0]}" class="${i[0]===h?'on':''}">${i[1]}</a>`).join('');$('#who').innerHTML=u?`<span id="syncst" class="syncst${syncBad?' bad':''}" title="${esc(syncText)}">${esc(syncText)}</span><span>${esc(u.nama)}</span><button type="button" class="out" onclick="logout()">Keluar</button>`:'';document.querySelector('header').classList.toggle('two',!!u);
+  $('#brand').innerHTML=(logo?`<img src="${logo}" alt="Logo">`:'<i class="mark"></i>')+'<span>'+esc(libName||'Perpustakaan')+'</span>';document.title=libName||'Perpustakaan';document.body.dataset.pg=h;$('#nav').innerHTML=items.map(i=>`<a href="#${i[0]}" class="${i[0]===h?'on':''}">${i[1]}</a>`).join('');$('#who').innerHTML=u?`<span>${esc(u.nama)}</span><button type="button" class="out" onclick="logout()">Keluar</button>`:'';document.querySelector('header').classList.toggle('two',!!u);
   $('#app').innerHTML=({katalog:vKatalog,masuk:vMasuk,dashboard:vDash,buku:vBuku,anggota:vAnggota,kartu:vKartu,pinjam:vPinjam,reservasi:vReservasi,kunjungan:vKunjungan,denda:vDenda,pengurus:vPengurus,laporan:vLaporan,pengaturan:vSet})[h]();
   if(h==='katalog')list();if(h==='kartu')kList();if(h==='pinjam')initPinjam();if(h==='kunjungan')visList();qmap={};['bkT','anT','actT','hisT','dnT','kasT','rsT'].forEach(applyRows);hintSwipe();navActive();hdrH();
 }
@@ -218,250 +213,19 @@ function list(){
 }
 
 /* LOGIN */
-/* ===== VERSI ONLINE (Supabase) ===== */
-const CFG=window.APP_CONFIG||{};
-const SB={url:String(CFG.SUPABASE_URL||'').replace(/\/+$/,''),key:CFG.SUPABASE_ANON_KEY||'',session:null};
-const COLN=['books','loans','members','visits','kas','resv'];
-var snap={books:{},loans:{},members:{},visits:{},kas:{},resv:{}},pubHeld={},dirty=false,pushing=false,rerun=false,pushTimer=null,syncText='',syncBad=false,pollOn=false;
-const colGet=n=>({books,loans,members,visits,kas:kasTx,resv})[n];
-const colSet=(n,v)=>{if(n==='books')books=v;else if(n==='loans')loans=v;else if(n==='members')members=v;else if(n==='visits')visits=v;else if(n==='kas')kasTx=v;else resv=v};
-const isStaff=()=>!!(SB.session&&me&&users[me]);
-const fixBooks=()=>books.forEach(b=>{if(b.penerbit==null)b.penerbit='';if(b.kode==null)b.kode=b.rak||''});
-const sessFrom=j=>({access_token:j.access_token,refresh_token:j.refresh_token,expires_at:j.expires_at||Math.floor(Date.now()/1000)+(j.expires_in||3600),uid:j.user&&j.user.id,email:j.user&&j.user.email});
-function setSess(s){SB.session=s;try{if(s)sessionStorage.setItem('lib_sess',JSON.stringify(s));else sessionStorage.removeItem('lib_sess')}catch(e){}}
-async function refreshSess(){
-  const s=SB.session;if(!s||!s.refresh_token)throw new Error('Sesi berakhir');
-  const r=await fetch(SB.url+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:SB.key,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:s.refresh_token})});
-  const j=await r.json();if(!r.ok)throw new Error(j.error_description||j.msg||'Sesi berakhir');
-  setSess(sessFrom(j));
-}
-async function token(){
-  const s=SB.session;if(!s)return SB.key;
-  if(s.expires_at&&s.expires_at*1000-Date.now()<60000){try{await refreshSess()}catch(e){}}
-  return SB.session?SB.session.access_token:SB.key;
-}
-async function api(method,path,opt){
-  opt=opt||{};const t=await token();
-  const h={apikey:SB.key,Authorization:'Bearer '+t,'Content-Type':'application/json'};if(opt.prefer)h.Prefer=opt.prefer;
-  const r=await fetch(SB.url+path,{method,headers:h,body:opt.body!==undefined?JSON.stringify(opt.body):undefined});
-  const tx=await r.text();let j=null;try{j=tx?JSON.parse(tx):null}catch(e){}
-  if(!r.ok){const er=new Error((j&&(j.message||j.error_description||j.msg||j.error))||('Kesalahan '+r.status));er.status=r.status;throw er}
-  return j;
-}
-const rpc=(fn,args)=>api('POST','/rest/v1/rpc/'+fn,{body:args});
-async function dbSelect(t){
-  const out=[];
-  for(let off=0;;off+=1000){
-    const rows=await api('GET','/rest/v1/'+t+'?select=id,data&order=id&limit=1000&offset='+off);
-    rows.forEach(r=>out.push(r.data));if(rows.length<1000)break;
-  }
-  return out;
-}
-async function dbUpsert(t,rows){for(let i=0;i<rows.length;i+=200)await api('POST','/rest/v1/'+t,{body:rows.slice(i,i+200),prefer:'resolution=merge-duplicates,return=minimal'})}
-async function dbDelete(t,ids){for(let i=0;i<ids.length;i+=40){const q=ids.slice(i,i+40).map(x=>'"'+String(x).replace(/"/g,'')+'"').join(',');await api('DELETE','/rest/v1/'+t+'?id=in.('+encodeURIComponent(q)+')',{prefer:'return=minimal'})}}
-const SETVAR={lib_name:v=>{libName=v},lib_dash:v=>{dashName=v},lib_logo:v=>{logo=v},lib_fine:v=>{fineRate=Number(v)},lib_resdays:v=>{resDays=Number(v)}};
-async function loadSettings(){const rows=await api('GET','/rest/v1/settings?select=key,value');(rows||[]).forEach(r=>{const f=SETVAR[r.key];if(f&&r.value!=null)f(r.value)})}
-async function loadProfiles(){const rows=await api('GET','/rest/v1/profiles?select=id,nama,role,email');users={};(rows||[]).forEach(r=>{users[r.id]=r})}
-async function loadPublic(){
-  const c=await api('POST','/rest/v1/rpc/public_catalog',{body:{}});
-  books=(c&&c.books)||[];pubHeld=(c&&c.held)||{};fixBooks();
-}
-async function loadAll(){
-  await loadSettings();
-  if(isStaff()){
-    const res=await Promise.all(COLN.map(dbSelect));
-    if(dirty||pushing)return;
-    COLN.forEach((n,i)=>{colSet(n,res[i]);snap[n]={};res[i].forEach(o=>{snap[n][o.id]=JSON.stringify(o)})});
-    fixBooks();await loadProfiles();
-  }else await loadPublic();
-}
-async function setRemote(k,v){
-  if(!isStaff())return;
-  try{await api('POST','/rest/v1/settings',{body:[{key:k,value:v}],prefer:'resolution=merge-duplicates,return=minimal'});setSyncChip('Tersimpan')}
-  catch(e){setSyncChip('Gagal menyimpan pengaturan: '+e.message,true)}
-}
-function setSyncChip(t,bad){syncText=t||'';syncBad=!!bad;const e=document.getElementById('syncst');if(e){e.textContent=syncText;e.title=syncText;e.className='syncst'+(syncBad?' bad':'')}}
-function syncSoon(){
-  if(!isStaff())return;
-  dirty=true;setSyncChip('Menyimpan…');clearTimeout(pushTimer);pushTimer=setTimeout(pushAll,400);
-}
-async function pushAll(){
-  if(!isStaff()){dirty=false;return}
-  if(pushing){rerun=true;return}
-  pushing=true;
-  try{
-    do{
-      rerun=false;
-      for(const n of COLN){
-        const cur=colGet(n)||[],seen={},up=[];
-        cur.forEach(o=>{if(!o||o.id==null)return;seen[o.id]=1;const js=JSON.stringify(o);if(snap[n][o.id]!==js)up.push({id:String(o.id),data:o,js})});
-        const del=Object.keys(snap[n]).filter(id=>!seen[id]);
-        if(up.length){await dbUpsert(n,up.map(r=>({id:r.id,data:r.data})));up.forEach(r=>{snap[n][r.id]=r.js})}
-        if(del.length){await dbDelete(n,del);del.forEach(id=>{delete snap[n][id]})}
-      }
-    }while(rerun);
-    dirty=false;setSyncChip('Tersimpan');
-  }catch(e){
-    setSyncChip('Gagal menyimpan: '+e.message,true);clearTimeout(pushTimer);pushTimer=setTimeout(pushAll,6000);
-  }finally{pushing=false}
-}
-window.addEventListener('beforeunload',e=>{if(dirty||pushing){e.preventDefault();e.returnValue=''}});
-const stateKey=()=>JSON.stringify([books,loans,members,visits,kasTx,resv,pubHeld,libName,dashName,logo,fineRate,resDays,users]);
-async function refresh(){
-  const before=stateKey();
-  try{await loadAll()}catch(e){return}
-  if(before!==stateKey())route();
-}
-function startPolling(){
-  if(pollOn)return;pollOn=true;
-  const busy=()=>{const a=document.activeElement;return document.hidden||pushing||dirty||document.querySelector('.ov')||(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))};
-  setInterval(()=>{if(!busy())refresh()},30000);
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(()=>{if(!busy())refresh()},400)});
-}
-async function restoreSession(){
-  let s=null;try{s=JSON.parse(sessionStorage.getItem('lib_sess')||'null')}catch(e){}
-  if(!s||!s.refresh_token)return;
-  SB.session=s;
-  try{
-    if(s.expires_at*1000-Date.now()<60000)await refreshSess();
-    const rows=await api('GET','/rest/v1/profiles?id=eq.'+SB.session.uid+'&select=id,nama,role,email');
-    if(rows&&rows[0]){me=SB.session.uid;users={};users[me]=rows[0]}else setSess(null);
-  }catch(e){setSess(null)}
-}
-async function boot(){
-  if(!SB.url||/GANTI/.test(SB.url+SB.key)){$('#app').innerHTML='<div class="card"><h2>Aplikasi belum dikonfigurasi</h2><p class="sub" style="margin:0">Isi SUPABASE_URL dan SUPABASE_ANON_KEY di berkas config.js, lalu muat ulang halaman. Lihat PANDUAN.md.</p></div>';return}
-  $('#app').innerHTML='<div class="card"><p class="sub" style="margin:0">Memuat data…</p></div>';
-  await restoreSession();
-  try{await loadAll()}
-  catch(e){$('#app').innerHTML='<div class="card"><h2>Tidak dapat terhubung ke server</h2><p class="sub" style="margin:0 0 10px">'+esc(e.message)+'</p><button class="btn" onclick="location.reload()">Coba lagi</button></div>';return}
-  route();startPolling();
-}
-var lastEm='';
 function vMasuk(){
   return `<div class="card login"><h2>Masuk Staf Perpustakaan</h2>
-  <form onsubmit="login(event)"><div style="margin-bottom:10px"><label>Email</label><input name="em" type="email" value="${esc(lastEm)}" required autocomplete="username"></div>
-  <div style="margin-bottom:12px"><label>Kata sandi</label><input name="pw" type="password" required autocomplete="current-password"></div>
+  <form onsubmit="login(event)"><div style="margin-bottom:10px"><label>Peran</label><select name="role" onchange="$('#unw').style.display=this.value==='admin'?'none':'block'"><option value="admin">Admin</option><option value="kepala">Kepala Perpustakaan</option><option value="staf">Staf Perpustakaan</option><option value="duta">Duta Perpustakaan</option></select></div><div id="unw" style="display:none;margin-bottom:10px"><label>Username</label><input name="un" autocomplete="username"></div>
+  <div style="margin-bottom:10px"><label>Kata sandi</label><input name="pw" type="password" required autocomplete="current-password"></div>
+  
   <button class="btn" style="width:100%">Masuk</button><p class="err">${esc(msg)}</p></form></div>`;
 }
-async function login(e){
-  e.preventDefault();const f=e.target,btn=f.querySelector('button');btn.disabled=true;msg='';lastEm=f.em.value.trim();
-  try{
-    const r=await fetch(SB.url+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:SB.key,'Content-Type':'application/json'},body:JSON.stringify({email:f.em.value.trim(),password:f.pw.value})});
-    const j=await r.json();
-    if(!r.ok)throw new Error(r.status===400?'Email atau kata sandi salah.':(j.error_description||j.msg||'Gagal masuk.'));
-    setSess(sessFrom(j));
-    const rows=await api('GET','/rest/v1/profiles?id=eq.'+SB.session.uid+'&select=id,nama,role,email');
-    if(!rows||!rows[0]){await doLogout();throw new Error('Akun ini belum terdaftar sebagai petugas perpustakaan.')}
-    me=SB.session.uid;users={};users[me]=rows[0];
-    await loadAll();location.hash='#dashboard';route();startPolling();
-  }catch(err){
-    setSess(null);me=null;users={};
-    try{await loadPublic()}catch(x){}
-    msg=err.message;route();msg='';
-  }
+function login(e){
+  e.preventDefault();const f=e.target,k=f.role.value==='admin'?'admin':(f.un.value.trim().toLowerCase()||(f.role.value==='kepala'?'kepala':'')),u=users[k];
+  if(u&&u.role===f.role.value&&u.pw===f.pw.value){me=k;msg='';try{sessionStorage.setItem('lib_me',k)}catch(x){}location.hash='#dashboard';route()}
+  else{msg='Username atau kata sandi salah.';route()}
 }
-async function doLogout(){
-  try{if(SB.session)await api('POST','/auth/v1/logout',{body:{}})}catch(e){}
-  setSess(null);me=null;users={};loans=[];members=[];visits=[];kasTx=[];resv=[];dirty=false;
-  snap={books:{},loans:{},members:{},visits:{},kas:{},resv:{}};
-}
-function logout(){doLogout().then(async()=>{try{await loadPublic()}catch(e){}location.hash='#katalog';route()})}
-async function fnAdmin(body){return api('POST','/functions/v1/admin-users',{body})}
-function resetPw(id){
-  const u=users[id];
-  if(u&&u.role!=='admin'&&U().role==='admin')ask('Reset kata sandi akun '+u.nama+' ('+u.email+') menjadi 123456?',async()=>{
-    try{await fnAdmin({action:'update',id,password:'123456'});msg='Kata sandi '+u.nama+' direset ke 123456. Minta pengurus segera menggantinya di menu Pengaturan.'}
-    catch(e){msg='Gagal reset: '+e.message}
-    route();msg='';
-  },'Ya, reset');
-}
-function vPengurus(){
-  const c=r=>Object.values(users).filter(u=>u.role===r).length;
-  return `<h1>Kelola Pengurus</h1><p class="sub">Daftar dan pengelolaan akun Kepala Perpustakaan, Staf, dan Duta Perpustakaan. Akun masuk memakai email dan kata sandi.</p>
-  <div class="stats"><div class="card stat"><b>${c('kepala')}</b><span>Kepala Perpustakaan</span></div><div class="card stat"><b>${c('staf')}</b><span>Staf</span></div><div class="card stat"><b>${c('duta')}</b><span>Duta</span></div></div>
-  <p class="note" style="margin:0 0 10px">${esc(msg)}</p>${staffCard()}`;
-}
-function staffCard(){
-  const o=['kepala','staf','duta'],st=Object.values(users).filter(u=>u.role!=='admin').sort((a,b)=>o.indexOf(a.role)-o.indexOf(b.role)||String(a.nama).localeCompare(String(b.nama))),ed=editUser&&users[editUser]?users[editUser]:null;
-  return `<div class="card"><h2>Akun Kepala, Staf, dan Duta</h2><p class="sub" style="margin-bottom:10px">Admin adalah pengelola utama. Tambahkan dan ubah akun yang posisinya di bawah Admin: Kepala Perpustakaan (akses penuh termasuk Laporan), Staf (buku, anggota, dan peminjaman), dan Duta Perpustakaan (peminjaman).</p>
-  ${ed?`<p class="note" style="margin:0 0 8px">Mengubah akun: <b>${esc(ed.nama)}</b></p>`:''}<form onsubmit="addStaf(event)"><div class="row"><div><label>Jabatan</label><select name="role">${o.map(r=>`<option value="${r}" ${ed&&ed.role===r?'selected':''}>${ROLE[r]}</option>`).join('')}</select></div><div><label>Nama lengkap</label><input name="nama" value="${esc(ed?ed.nama:'')}" required></div><div><label>Email (untuk masuk)</label><input name="em" type="email" value="${esc(ed?ed.email:'')}" required autocomplete="off"></div><div><label>${ed?'Kata sandi baru (kosongkan jika tidak diubah)':'Kata sandi'}</label><input name="pw" type="password" ${ed?'':'required'} autocomplete="new-password"></div></div><div class="flex"><button class="btn">${ed?'Simpan perubahan':'Tambah akun'}</button>${ed?'<button type="button" class="btn s" onclick="editUser=null;route()">Batal</button>':''}</div></form>
-  <div class="tw" style="margin-top:12px"><table><tr><th>Nama</th><th>Jabatan</th><th>Email</th><th></th></tr>${st.map(u=>`<tr><td>${esc(u.nama)}</td><td>${esc(ROLE[u.role]||u.role)}</td><td><b>${esc(u.email)}</b></td><td><button class="btn s m" onclick="editUser='${esc(u.id)}';route();scrollTo(0,0)">Ubah</button> <button class="btn s m" onclick="resetPw('${esc(u.id)}')">Reset sandi</button> <button class="btn d m" onclick="delStaf('${esc(u.id)}')">Hapus</button></td></tr>`).join('')||'<tr><td colspan="4">Belum ada akun.</td></tr>'}</table></div></div>`;
-}
-async function addStaf(e){
-  e.preventDefault();const f=e.target,say=t=>{msg=t;route();msg=''};
-  if(!U()||U().role!=='admin')return;
-  const email=f.em.value.trim().toLowerCase(),pw=f.pw.value,nama=f.nama.value.trim(),role=f.role.value;
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){say('Format email tidak valid.');return}
-  if((!editUser||pw)&&pw.length<6){say('Kata sandi minimal 6 karakter.');return}
-  const btn=f.querySelector('button');btn.disabled=true;
-  try{
-    if(editUser){await fnAdmin({action:'update',id:editUser,nama,role,email,password:pw});editUser=null;await loadProfiles();say('Data '+nama+' diperbarui.')}
-    else{await fnAdmin({action:'create',email,password:pw,nama,role});await loadProfiles();say('Akun '+nama+' ditambahkan.')}
-  }catch(err){btn.disabled=false;say('Gagal: '+err.message)}
-}
-function delStaf(id){
-  const u=users[id];if(!u||u.role==='admin'||U().role!=='admin')return;
-  ask('Hapus akun '+u.nama+' ('+u.email+')? Akun ini tidak bisa masuk lagi setelah dihapus.',async()=>{
-    try{await fnAdmin({action:'delete',id});if(editUser===id)editUser=null;await loadProfiles();msg='Akun '+u.nama+' dihapus.'}
-    catch(e){msg='Gagal menghapus: '+e.message}
-    route();msg='';
-  });
-}
-async function setCred(e){
-  e.preventDefault();const pw=e.target.pw.value,say=t=>{msg=t;route();msg=''};
-  if(pw.length<6){say('Kata sandi minimal 6 karakter.');return}
-  try{await api('PUT','/auth/v1/user',{body:{password:pw}});say('Kata sandi diperbarui.')}
-  catch(err){say('Gagal: '+err.message)}
-}
-function resDlg(id){
-  const b=bk(id);if(!b)return;
-  const o=document.createElement('div');o.className='ov';
-  o.innerHTML=`<div class="dlg"><h2 style="margin:0 0 6px">Reservasi buku</h2><p style="margin:0 0 8px"><b>${esc(b.judul)}</b><br><span class="note" style="margin:0">${esc(b.penulis)}</span></p><p class="note" style="margin:0 0 10px">Hanya untuk anggota terdaftar. Buku ditahan ${resDays} hari untuk Anda ambil di perpustakaan.</p><label>Nomor anggota</label><input id="rn" placeholder="Contoh: AGT-001" autocomplete="off" style="margin-bottom:8px"><p id="rm" class="note" style="margin:0 0 10px;min-height:1.2em"></p><div class="flex" style="justify-content:flex-end"><button class="btn s" id="no">Batal</button><button class="btn" id="yes">Reservasi</button></div></div>`;
-  document.body.appendChild(o);
-  const inp=o.querySelector('#rn'),rm=o.querySelector('#rm'),yes=o.querySelector('#yes');let step=1;
-  inp.focus();o.querySelector('#no').onclick=()=>o.remove();
-  inp.oninput=()=>{step=1;yes.textContent='Reservasi';rm.className='note';rm.textContent=''};
-  yes.onclick=async()=>{
-    yes.disabled=true;rm.className='note';rm.textContent='Memeriksa…';
-    try{
-      if(step===1){
-        const c=await rpc('reserve_preview',{p_no:inp.value,p_book:id});
-        if(!c.ok){rm.className='err';rm.textContent=c.error}
-        else{step=2;rm.textContent='Reservasi atas nama '+c.nama_samar+'. Tekan Konfirmasi jika benar.';yes.textContent='Konfirmasi'}
-        yes.disabled=false;return;
-      }
-      const c=await rpc('reserve_book',{p_no:inp.value,p_book:id});
-      if(!c.ok){rm.className='err';rm.textContent=c.error;step=1;yes.textContent='Reservasi';yes.disabled=false;return}
-      o.querySelector('.dlg').innerHTML=`<h2 style="margin:0 0 8px">Reservasi berhasil</h2><p style="margin:0 0 6px">Kode reservasi: <b>${esc(c.kode)}</b></p><p style="margin:0 0 6px"><b>${esc(b.judul)}</b></p><p class="note" style="margin:0 0 12px">Atas nama ${esc(c.nama_samar)}. Ambil buku di perpustakaan paling lambat <b>${fmtD(c.batas)}</b> dan tunjukkan nomor anggota Anda. Setelah lewat tanggal itu, reservasi dibatalkan otomatis.</p><div class="flex" style="justify-content:flex-end"><button class="btn" id="no2">Tutup</button></div>`;
-      o.querySelector('#no2').onclick=()=>o.remove();
-      if(isStaff())refresh();else{try{await loadPublic();if($('#list'))list()}catch(e){}}
-    }catch(err){rm.className='err';rm.textContent='Gagal terhubung: '+err.message;yes.disabled=false}
-  };
-  inp.onkeydown=e=>{if(e.key==='Enter'&&!yes.disabled)yes.click()};
-}
-function resCek(){
-  const o=document.createElement('div');o.className='ov';
-  o.innerHTML=`<div class="dlg" style="max-width:440px"><h2 style="margin:0 0 8px">Reservasi saya</h2><label>Nomor anggota</label><div class="flex" style="margin-bottom:8px"><input id="rn" placeholder="Contoh: AGT-001" autocomplete="off" style="flex:1;width:auto"><button class="btn" id="go">Cek</button></div><div id="rl"></div><div class="flex" style="justify-content:flex-end;margin-top:12px"><button class="btn s" id="no">Tutup</button></div></div>`;
-  document.body.appendChild(o);
-  const inp=o.querySelector('#rn'),rl=o.querySelector('#rl'),go=o.querySelector('#go');inp.focus();
-  o.querySelector('#no').onclick=()=>o.remove();
-  const show=async()=>{
-    rl.innerHTML='<p class="note" style="margin:0">Memeriksa…</p>';
-    try{
-      const c=await rpc('my_reservations',{p_no:inp.value});
-      if(!c.ok){rl.innerHTML=`<p class="err" style="margin:0">${esc(c.error)}</p>`;return}
-      const L=c.items||[];
-      rl.innerHTML=`<p class="note" style="margin:0 0 8px">Atas nama ${esc(c.nama_samar)}</p>`+(L.length?L.map(r=>`<div class="flex" style="justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bd)"><span><b>${esc(r.kode)}</b> ${esc(r.judul)}<br><small class="note">Ambil sebelum ${fmtD(r.batas)}</small></span><button class="btn d m" data-id="${esc(r.id)}">Batalkan</button></div>`).join(''):'<p class="sub" style="margin:0">Tidak ada reservasi aktif.</p>');
-      rl.querySelectorAll('button[data-id]').forEach(bt=>{bt.onclick=async()=>{
-        bt.disabled=true;
-        try{const x=await rpc('cancel_reservation',{p_no:inp.value,p_id:bt.dataset.id});if(!x.ok){rl.innerHTML=`<p class="err" style="margin:0">${esc(x.error)}</p>`;return}
-          await show();if(isStaff())refresh();else{await loadPublic();if($('#list'))list()}}
-        catch(err){rl.innerHTML=`<p class="err" style="margin:0">Gagal: ${esc(err.message)}</p>`}
-      }});
-    }catch(err){rl.innerHTML=`<p class="err" style="margin:0">Gagal terhubung: ${esc(err.message)}</p>`}
-  };
-  go.onclick=show;inp.onkeydown=e=>{if(e.key==='Enter')show()};
-}
+function logout(){me=null;try{sessionStorage.removeItem('lib_me')}catch(e){}location.hash='#katalog';route()}
 
 /* DASHBOARD */
 function vDash(){
@@ -575,6 +339,14 @@ $('#nav').addEventListener('scroll',navArrows);
 window.addEventListener('resize',navArrows);
 
 /* SINKRONISASI ANTAR TAB */
+window.addEventListener('storage',e=>{
+  if(e.key&&!e.key.startsWith('lib_'))return;
+  books=load('lib_books',books);loans=load('lib_loans',loans);members=load('lib_members',members);visits=load('lib_visits',visits);kasTx=load('lib_kas',kasTx);resv=load('lib_resv',resv);
+  users=load('lib_users',users);logo=load('lib_logo',logo);libName=load('lib_name',libName);dashName=load('lib_dash',dashName);
+  books.forEach(b=>{if(b.penerbit==null)b.penerbit='';if(b.kode==null)b.kode=b.rak||''});
+  const a=document.activeElement,typing=a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName);
+  if(!document.querySelector('.ov')&&!typing)route();
+});
 
 /* TINGGI BILAH ATAS */
 function hdrH(){document.documentElement.style.setProperty('--hh',document.querySelector('header').offsetHeight+'px')}
@@ -1146,6 +918,38 @@ function addVisit(e){
   visits.push({id:'v'+Date.now(),n,tgl});sv();say('Kunjungan '+n+' pada '+fmtD(tgl)+' dicatat.');
 }
 
+/* RESET SANDI (admin) */
+function resetPw(k){
+  const u=users[k];
+  if(u&&u.role!=='admin')ask('Reset kata sandi akun '+u.nama+' ('+k+') menjadi 123456?',()=>{u.pw='123456';sv();msg='Kata sandi '+u.nama+' direset ke 123456. Minta pengurus segera menggantinya di menu Pengaturan.';route();msg=''},'Ya, reset');
+}
+
+/* PENGURUS (admin) */
+function vPengurus(){
+  const c=r=>Object.values(users).filter(u=>u.role===r).length;
+  return `<h1>Kelola Pengurus</h1><p class="sub">Daftar dan pengelolaan akun Kepala Perpustakaan, Staf, dan Duta Perpustakaan, termasuk username masing-masing.</p>
+  <div class="stats"><div class="card stat"><b>${c('kepala')}</b><span>Kepala Perpustakaan</span></div><div class="card stat"><b>${c('staf')}</b><span>Staf</span></div><div class="card stat"><b>${c('duta')}</b><span>Duta</span></div></div>
+  <p class="note" style="margin:0 0 10px">${esc(msg)}</p>${staffCard()}`;
+}
+
+/* STAF */
+function staffCard(){
+  const st=Object.entries(users).filter(([k,u])=>u.role!=='admin').sort((a,b)=>['kepala','staf','duta'].indexOf(a[1].role)-['kepala','staf','duta'].indexOf(b[1].role)),ed=editUser&&users[editUser]?users[editUser]:null;
+  return `<div class="card"><h2>Akun Kepala, Staf, dan Duta</h2><p class="sub" style="margin-bottom:10px">Admin adalah pengelola utama. Tambahkan dan ubah akun yang posisinya di bawah Admin: Kepala Perpustakaan (akses penuh termasuk Laporan), Staf (buku, anggota, dan peminjaman), dan Duta Perpustakaan (peminjaman).</p>
+  ${ed?`<p class="note" style="margin:0 0 8px">Mengubah akun: <b>${esc(ed.nama)}</b></p>`:''}<form onsubmit="addStaf(event)"><div class="row"><div><label>Jabatan</label><select name="role">${['kepala','staf','duta'].map(r=>`<option value="${r}" ${ed&&ed.role===r?'selected':''}>${ROLE[r]}</option>`).join('')}</select></div><div><label>Nama lengkap</label><input name="nama" value="${esc(ed?ed.nama:'')}" required></div><div><label>Username</label><input name="un" value="${esc(editUser||'')}" required autocomplete="off"></div><div><label>${ed?'Kata sandi baru (kosongkan jika tidak diubah)':'Kata sandi'}</label><input name="pw" type="password" ${ed?'':'required'} autocomplete="new-password"></div></div><div class="flex"><button class="btn">${ed?'Simpan perubahan':'Tambah akun'}</button>${ed?'<button type="button" class="btn s" onclick="editUser=null;route()">Batal</button>':''}</div></form>
+  <div class="tw" style="margin-top:12px"><table><tr><th>Nama</th><th>Jabatan</th><th>Username</th><th></th></tr>${st.map(([k,u])=>`<tr><td>${esc(u.nama)}</td><td>${esc(ROLE[u.role]||u.role)}</td><td><b>${esc(k)}</b></td><td><button class="btn s m" onclick="editUser='${esc(k)}';route();scrollTo(0,0)">Ubah</button> <button class="btn s m" onclick="resetPw('${esc(k)}')">Reset sandi</button> <button class="btn d m" onclick="delStaf('${esc(k)}')">Hapus</button></td></tr>`).join('')||'<tr><td colspan="4">Belum ada akun.</td></tr>'}</table></div></div>`;
+}
+function addStaf(e){
+  e.preventDefault();const f=e.target,un=f.un.value.trim().toLowerCase(),say=t=>{msg=t;route();msg=''};
+  if(editUser&&users[editUser]){const t=users[editUser];if(f.pw.value&&f.pw.value.length<6){say('Kata sandi minimal 6 karakter.');return}if(un!==editUser){if(!/^[a-z0-9._-]{3,20}$/.test(un)){say('Username 3 sampai 20 karakter: huruf kecil, angka, titik, garis bawah, atau strip.');return}if(un in users){say('Username sudah dipakai.');return}users[un]=t;delete users[editUser]}t.role=f.role.value;t.nama=f.nama.value.trim();delete t.jabatan;if(f.pw.value)t.pw=f.pw.value;const n=t.nama;editUser=null;sv();say('Data '+n+' diperbarui.');return}
+  if(!/^[a-z0-9._-]{3,20}$/.test(un)){say('Username 3 sampai 20 karakter: huruf kecil, angka, titik, garis bawah, atau strip.');return}
+  if(un in users){say('Username sudah dipakai.');return}
+  if(f.pw.value.length<6){say('Kata sandi minimal 6 karakter.');return}
+  users[un]={role:f.role.value,nama:f.nama.value.trim(),pw:f.pw.value};sv();
+  say('Akun '+f.nama.value.trim()+' ditambahkan.');
+}
+function delStaf(k){const u=users[k];if(u&&u.role!=='admin')ask('Hapus akun '+u.nama+' ('+k+')? Akun ini tidak bisa masuk lagi setelah dihapus.',()=>{delete users[k];if(editUser===k)editUser=null;sv();msg='Akun '+u.nama+' dihapus.';route();msg=''})}
+
 /* CETAK DAFTAR BUKU */
 var bkKat='';
 function bukuData(){
@@ -1331,6 +1135,55 @@ const maskName=n=>String(n).split(' ').map(w=>w?w[0]+'*'.repeat(Math.max(0,w.len
 const findMember=no=>members.find(m=>m.no.toLowerCase()===String(no).trim().toLowerCase());
 const memLabel=m=>m.nama+' ('+m.no+')';
 const busyBooks=()=>new Set([...loans.filter(l=>!l.tglKembali).map(l=>l.bookId),...resv.filter(resLive).map(r=>r.bookId)]);
+function resCheck(m,b){
+  if(avail(b)<=0)return 'Buku ini sedang tidak tersedia untuk direservasi.';
+  if(resv.some(r=>resLive(r)&&r.no===m.no&&r.bookId===b.id))return 'Anda sudah mereservasi buku ini.';
+  if(loans.some(l=>!l.tglKembali&&l.peminjam===memLabel(m)&&l.bookId===b.id))return 'Anda sedang meminjam buku ini.';
+  if(resv.filter(r=>resLive(r)&&r.no===m.no).length>=RES_MAX)return 'Batas reservasi aktif ('+RES_MAX+' buku) sudah tercapai. Batalkan atau ambil reservasi lain dulu.';
+  return '';
+}
+function resDlg(id){
+  const b=bk(id);if(!b)return;
+  const o=document.createElement('div');o.className='ov';
+  o.innerHTML=`<div class="dlg"><h2 style="margin:0 0 6px">Reservasi buku</h2><p style="margin:0 0 8px"><b>${esc(b.judul)}</b><br><span class="note" style="margin:0">${esc(b.penulis)}</span></p><p class="note" style="margin:0 0 10px">Hanya untuk anggota terdaftar. Buku ditahan ${resDays} hari untuk Anda ambil di perpustakaan.</p><label>Nomor anggota</label><input id="rn" placeholder="Contoh: AGT-001" autocomplete="off" style="margin-bottom:8px"><p id="rm" class="note" style="margin:0 0 10px;min-height:1.2em"></p><div class="flex" style="justify-content:flex-end"><button class="btn s" id="no">Batal</button><button class="btn" id="yes">Reservasi</button></div></div>`;
+  document.body.appendChild(o);
+  const inp=o.querySelector('#rn'),rm=o.querySelector('#rm'),yes=o.querySelector('#yes');let step=1,mem=null;
+  inp.focus();o.querySelector('#no').onclick=()=>o.remove();
+  inp.oninput=()=>{step=1;mem=null;yes.textContent='Reservasi';rm.className='note';rm.textContent=''};
+  yes.onclick=()=>{
+    if(step===1){
+      const m=findMember(inp.value);
+      if(!m){rm.className='err';rm.textContent='Nomor anggota tidak terdaftar. Periksa nomor pada kartu anggota Anda.';return}
+      const e=resCheck(m,b);if(e){rm.className='err';rm.textContent=e;return}
+      mem=m;step=2;rm.className='note';rm.textContent='Reservasi atas nama '+maskName(m.nama)+'. Tekan Konfirmasi jika benar.';yes.textContent='Konfirmasi';return;
+    }
+    const e=resCheck(mem,b);if(e){rm.className='err';rm.textContent=e;step=1;yes.textContent='Reservasi';return}
+    const n=Math.max(0,...resv.map(r=>parseInt(String(r.kode).slice(4),10)||0))+1,kode='RSV-'+String(n).padStart(3,'0'),batas=addDays(today(),resDays);
+    resv.push({id:'r'+Date.now(),kode,bookId:b.id,no:mem.no,nama:mem.nama,tgl:today(),batas,status:'Menunggu'});sv();
+    o.querySelector('.dlg').innerHTML=`<h2 style="margin:0 0 8px">Reservasi berhasil</h2><p style="margin:0 0 6px">Kode reservasi: <b>${kode}</b></p><p style="margin:0 0 6px"><b>${esc(b.judul)}</b></p><p class="note" style="margin:0 0 12px">Atas nama ${esc(maskName(mem.nama))}. Ambil buku di perpustakaan paling lambat <b>${fmtD(batas)}</b> dan tunjukkan nomor anggota Anda. Setelah lewat tanggal itu, reservasi dibatalkan otomatis.</p><div class="flex" style="justify-content:flex-end"><button class="btn" id="no2">Tutup</button></div>`;
+    o.querySelector('#no2').onclick=()=>o.remove();
+    if($('#list'))list();
+  };
+  inp.onkeydown=e=>{if(e.key==='Enter')yes.click()};
+}
+function resCek(){
+  const o=document.createElement('div');o.className='ov';
+  o.innerHTML=`<div class="dlg" style="max-width:440px"><h2 style="margin:0 0 8px">Reservasi saya</h2><label>Nomor anggota</label><div class="flex" style="margin-bottom:8px"><input id="rn" placeholder="Contoh: AGT-001" autocomplete="off" style="flex:1;width:auto"><button class="btn" id="go">Cek</button></div><div id="rl"></div><div class="flex" style="justify-content:flex-end;margin-top:12px"><button class="btn s" id="no">Tutup</button></div></div>`;
+  document.body.appendChild(o);
+  const inp=o.querySelector('#rn'),rl=o.querySelector('#rl'),go=o.querySelector('#go');inp.focus();
+  o.querySelector('#no').onclick=()=>o.remove();
+  const show=()=>{
+    const m=findMember(inp.value);
+    if(!m){rl.innerHTML='<p class="err" style="margin:0">Nomor anggota tidak terdaftar.</p>';return}
+    const L=resv.filter(r=>r.no===m.no&&resLive(r));
+    rl.innerHTML=`<p class="note" style="margin:0 0 8px">Atas nama ${esc(maskName(m.nama))}</p>`+(L.length?L.map(r=>`<div class="flex" style="justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bd)"><span><b>${esc(r.kode)}</b> ${esc(bk(r.bookId)?bk(r.bookId).judul:'-')}<br><small class="note">Ambil sebelum ${fmtD(r.batas)}</small></span><button class="btn d m" data-id="${r.id}">Batalkan</button></div>`).join(''):'<p class="sub" style="margin:0">Tidak ada reservasi aktif.</p>');
+    rl.querySelectorAll('button[data-id]').forEach(bt=>{bt.onclick=()=>{
+      const r=resv.find(x=>x.id===bt.dataset.id);
+      if(r&&r.no===m.no&&resLive(r)){r.status='Dibatalkan';r.tglProses=today();sv();show();if($('#list'))list()}
+    }});
+  };
+  go.onclick=show;inp.onkeydown=e=>{if(e.key==='Enter')show()};
+}
 function vReservasi(){
   const cnt=s=>resv.filter(r=>resStat(r)===s).length,st=(n,t,c)=>`<div class="card stat"><b${c?' style="color:var(--bad)"':''}>${n}</b><span>${t}</span></div>`;
   const rows=resv.filter(r=>!rsStatus||resStat(r)===rsStatus).sort((a,b)=>b.tgl.localeCompare(a.tgl)||b.kode.localeCompare(a.kode));
@@ -1446,7 +1299,8 @@ function vSet(){
   const blk=(k,t)=>`<div class="card"><h2>${t}</h2><form onsubmit="setCred(event,'${k}')"><div class="row"><div><label>Kata sandi baru</label><input name="pw" type="password" required></div></div><button class="btn">Simpan</button></form></div>`;
   return `<h1>Pengaturan</h1><p class="sub">Atur nama tampilan, logo, dan kata sandi.</p><p class="note" style="margin:0 0 10px">${esc(msg)}</p>${!['admin','kepala'].includes(U().role)?'':nameCard()}${!['admin','kepala'].includes(U().role)?'':fineCard()}${!['admin','kepala'].includes(U().role)?'':resCard()}${!['admin','kepala'].includes(U().role)?'':backupCard()}${!['admin','kepala'].includes(U().role)?'':`<div class="card"><h2>Logo perpustakaan</h2><p class="sub" style="margin-bottom:10px">Logo tampil di bagian atas semua halaman dan di halaman awal katalog. Gunakan gambar PNG, JPG, atau WEBP.</p>${logo?`<div style="margin-bottom:10px"><img src="${logo}" alt="Logo saat ini" style="max-height:90px;max-width:100%"></div>`:''}<div class="flex"><input type="file" accept="image/png,image/jpeg,image/webp" onchange="setLogo(this)">${logo?'<button class="btn d m" onclick="delLogo()">Hapus logo</button>':''}</div></div>`}${blk(me,'Akun Saya')}`;
 }
-boot();
+function setCred(e,k){e.preventDefault();users[k].pw=e.target.pw.value;sv();msg='Tersimpan untuk '+users[k].nama+'.';route();msg=''}
+route();
 </script>
 </body>
 </html>
